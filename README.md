@@ -30,4 +30,6 @@ yarn run lint
 3. 引入iview https://www.iviewui.com/docs/guide/install
 3.1. 按需引入导致iview not defined https://www.jianshu.com/p/0520f4775456
 3.2. vscode中iview的标签报错 x-invalid-end-tag 关掉vetur.validation.template: https://blog.csdn.net/weixin_38278878/article/details/80447503
-:https://segmentfault.com/q/1010000013227727?utm_source=tag-newest
+关闭就好，别手贱，这个看看就好，按照这个弄，我环境就崩了:https://segmentfault.com/q/1010000013227727?utm_source=tag-newest
+4. 引入css预编译器   Vue CLI 项目天生支持 PostCSS、CSS Modules 和包含 Sass、Less、Stylus 在内的预处理器，只需安装即可
+4.1. https://cli.vuejs.org/zh/guide/css.html#%E5%BC%95%E7%94%A8%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90
