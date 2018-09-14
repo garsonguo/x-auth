@@ -3,7 +3,7 @@
         <Layout class="layout">
             <Sider class="sider" ref="side1" hide-trigger collapsible :collapsed-width="78" v-model="isCollapsed">
                 <div class="title">
-                    hahahaha
+                    x-auth
                 </div>
                 <Menu active-name="1-2" theme="dark" width="auto" :class="menuitemClasses">
                     <MenuItem :name="item.id" v-for="item in menuList">
@@ -17,7 +17,7 @@
                     <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 20px'}" type="md-menu" size="24"></Icon>
                 </Header>
                 <Content class="content" :style="{padding: '15px', background: '#fff', minHeight: '260px'}">
-                    Content
+                    <router-view></router-view>
                 </Content>
             </Layout>
         </Layout>
@@ -66,7 +66,7 @@ export default {
         color: #fff;
         font-size: 24px;
         border-bottom: 1px solid #dddddd;
-        text-align: center;
+        padding-left: 24px;
     }
   }
   .container {
