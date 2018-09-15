@@ -7,8 +7,10 @@
                 </div>
                 <Menu active-name="1-2" theme="dark" width="auto" :class="menuitemClasses">
                     <MenuItem :name="item.id" v-for="item in menuList">
-                        <Icon :type="item.icon"></Icon>
-                        <span>{{item.name}}</span>
+                        <router-link :to="item.path">
+                            <Icon :type="item.icon"></Icon>
+                            <span>{{item.name}}</span>
+                        </router-link>
                     </MenuItem>
                 </Menu>
             </Sider>
@@ -31,12 +33,14 @@ export default {
       isCollapsed: false,
       menuList:[{
           id: '1',
-          name: 'hahahah1',
-          icon: 'ios-navigate'
+          name: 'Home',
+          icon: 'ios-navigate',
+          path: 'Home'
       },{
           id: '2',
-          name: 'hahahah2',
-          icon: 'ios-navigate'
+          name: 'About',
+          icon: 'ios-navigate',
+          path: 'About'
       }]
     };
   },
