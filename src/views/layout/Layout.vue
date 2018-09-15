@@ -5,8 +5,8 @@
                 <div class="title">
                     x-auth
                 </div>
-                <Menu active-name="1-2" theme="dark" width="auto" :class="menuitemClasses">
-                    <MenuItem :name="item.id" v-for="item in menuList">
+                <Menu :active-name="$route.name" theme="dark" width="auto" :class="menuitemClasses">
+                    <MenuItem :name="item.name" v-for="item in menuList">
                         <router-link :to="item.path">
                             <Icon :type="item.icon"></Icon>
                             <span>{{item.name}}</span>
