@@ -6,17 +6,36 @@
                     x-auth
                 </div>
                 <Menu :active-name="$route.name" theme="dark" width="auto" :class="menuitemClasses">
-                    <MenuItem :name="item.name" v-for="item in menuList">
+                    <template v-for="item in menuList">
+                      <MenuItem :name="item.name" v-if="!item.children">
                         <router-link :to="item.path">
                             <Icon :type="item.icon"></Icon>
                             <span>{{item.name}}</span>
                         </router-link>
-                    </MenuItem>
+                      </MenuItem>
+                      <Submenu v-else :name="item.name">
+                        <template slot="title">
+                            <Icon type="ios-paper" />
+                            {{item.name}}
+                        </template>
+                        <MenuItem :name="child.name" v-for="child in item.children">
+                          <router-link :to="child.path">
+                            <Icon :type="child.icon"></Icon>
+                            <span>{{child.name}}</span>
+                          </router-link>
+                        </MenuItem>
+                      </Submenu>
+                    </template>
                 </Menu>
             </Sider>
             <Layout class="container">
                 <Header :style="{padding: 0}" class="header layout-header-bar">
                     <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 20px'}" type="md-menu" size="24"></Icon>
+                    <Breadcrumb class="bread-crumb">
+                        <BreadcrumbItem v-for="item in routeList" :to="item.path" :key="item.path">
+                          {{item.name}}
+                        </BreadcrumbItem>
+                    </Breadcrumb>
                 </Header>
                 <Content class="content" :style="{padding: '15px', background: '#fff', minHeight: '260px'}">
                     <router-view></router-view>
@@ -31,18 +50,39 @@ export default {
   data() {
     return {
       isCollapsed: false,
+      routeList: null,
       menuList:[{
           id: '1',
           name: 'Home',
           icon: 'ios-navigate',
-          path: 'Home'
+          path: '/Home'
       },{
           id: '2',
           name: 'About',
           icon: 'ios-navigate',
-          path: 'About'
+          children: [{
+            id: '2-1',
+            name: 'About1',
+            icon: 'ios-navigate',
+            path: '/About/About1'
+          },{
+            id: '2-1',
+            name: 'About2',
+            icon: 'ios-navigate',
+            path: '/About/About2'
+          }]
       }]
     };
+  },
+  mounted() {
+      let matched = this.$route.matched.filter(item => !item.redirect)
+      this.routeList = matched
+  },
+  watch: {
+    $route: function(route){
+      let matched = route.matched.filter(item => !item.redirect)
+      this.routeList = matched
+    }
   },
   computed: {
     rotateIcon() {
@@ -78,6 +118,9 @@ export default {
       background: #fff;
       margin-bottom: 1px solid #ffffff;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+      .bread-crumb{
+          display: inline-block;
+      }
     }
     .content{
         height: calc( 100vh - 64px );

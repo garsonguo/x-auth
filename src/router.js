@@ -13,13 +13,21 @@ export default new Router({
       component: Layout,
       redirect: 'Home',
       children: [{
-        path: 'Home',
+        path: '/Home',
         name: 'Home',
         component: () => import('./views/home/Home.vue')
       },{
         path:'About',
         name:'About',
-        component: () => import('./views/About.vue')
+        children: [{
+          path: '/About/About1',
+          name: 'About1',
+          component: () => import('./views/About1.vue')
+        },{
+          path: '/About/About2',
+          name: 'About2',
+          component: () => import('./views/About2.vue')
+        }]
       }]
     }
   ]
