@@ -48,15 +48,15 @@ export default {
     };
   },
   mounted() {
-      let matched = this.$route.matched.filter(item => !item.redirect)
-      this.routeList = matched
+      // let matched = this.$route.matched.filter(item => !item.redirect)
+      // this.routeList = matched
   },
-  watch: {
-    $route: function(route){
-      let matched = route.matched.filter(item => !item.redirect)
-      this.routeList = matched
-    }
-  },
+  // watch: {
+  //   $route: function(route){
+  //     let matched = route.matched.filter(item => !item.redirect)
+  //     this.routeList = matched
+  //   }
+  // },
   computed: {
     menuitemClasses() {
       return ["menu-item", this.isCollapsed ? "collapsed-menu" : ""];
@@ -75,14 +75,6 @@ export default {
   flex-direction: row;
   .container {
     flex: auto;
-    .header {
-      background: #fff;
-      margin-bottom: 1px solid #ffffff;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-      .bread-crumb{
-          display: inline-block;
-      }
-    }
     .content{
         height: calc( 100vh - 64px );
         overflow: auto;
