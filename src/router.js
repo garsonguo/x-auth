@@ -16,18 +16,21 @@ export default new Router({
         path: '/Home',
         name: 'Home',
         component: () => import('./views/home/Home.vue')
+      }]
+    },
+    {
+      path:'/About',
+      name:'About',
+      component: Layout,
+      redirect: 'About1',
+      children: [{
+        path: 'About1',
+        name: 'About1',
+        component: () => import('./views/About1.vue')
       },{
-        path:'About',
-        name:'About',
-        children: [{
-          path: '/About/About1',
-          name: 'About1',
-          component: () => import('./views/About1.vue')
-        },{
-          path: '/About/About2',
-          name: 'About2',
-          component: () => import('./views/About2.vue')
-        }]
+        path: 'About2',
+        name: 'About2',
+        component: () => import('./views/About2.vue')
       }]
     }
   ]
