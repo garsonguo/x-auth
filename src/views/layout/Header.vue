@@ -52,8 +52,6 @@ export default {
 <style scoped lang='less'>
 .header {
   background-color: #fff;
-  margin-bottom: 1px;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   .ivu-icon:hover {
     cursor: pointer;
   }
