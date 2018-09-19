@@ -9,13 +9,13 @@
             <Button type="default" @click="handleForward">
                 <Icon type="ios-arrow-forward" size="16"/>
             </Button>
-            <Dropdown placement="bottom-end">
+            <Dropdown placement="bottom-end" @on-click="handleClose">
                 <Button href="javascript:void(0)" type="default">
                     <Icon type="md-close"></Icon>
                 </Button>
                 <DropdownMenu slot="list">
-                    <DropdownItem @click="handleCloseAll">关闭所有</DropdownItem>
-                    <DropdownItem @click="handleCloseOther">关闭其他</DropdownItem>
+                    <DropdownItem name="closeAll">关闭所有</DropdownItem>
+                    <DropdownItem name="closeOther">关闭其他</DropdownItem>
                 </DropdownMenu>
             </Dropdown>
         </div>
@@ -25,7 +25,15 @@
                     Home
                 </router-link>
             </Tag>
-            <Tag v-for="item in tagList" type="dot" closable @on-close="tagClose" :name="item.name" :color="isCrrentTag(item)?'primary':'default'" :key="item.path">
+            <Tag 
+            v-for="(item, index) in tagList" 
+            type="dot" 
+            closable 
+            ref="tag"
+            @on-close="tagClose" 
+            :name="item.name" 
+            :color="isCrrentTag(item)?'primary':'default'" 
+            :key="`tag-${index}`">
                 <router-link :to="item.path">
                     {{item.name}}
                 </router-link>
@@ -42,13 +50,12 @@ export default {
     }
   },
   data() {
-      return {
-          tagBodyLeft:0
-      }
+    return {
+      tagBodyLeft: 0
+    }
   },
-  computed: {},
   methods: {
-    tagClose(event,name) {
+    tagClose(event, name) {
       this.$emit("tagClose", name);
     },
     isCrrentTag(item) {
@@ -58,28 +65,51 @@ export default {
       }
       return false;
     },
-    handleBack() {
-       let length = this.$refs.tags.offsetWidth-100;
-       let tagsLength = this.$refs.tagsList.offsetWidth;
-       if(tagsLength<length){
-           return
-       }else {
-           this.tagBodyLeft = length - tagsLength
-       }
-    },
+    handleBack() {},
     handleForward() {},
-    handleCloseAll() {},
-    handleCloseOther() {},
+    handleClose(name) {
+        if(name==='closeAll'){
+            this.$emit("handleCloseAll")
+        }else{
+            let currentRoute = this.$route.name
+            this.$emit("handleCloseOther", currentRoute)
+        }
+        
+    },
+    moveToView(tag) {
+      let outerLength = this.$refs.tags.offsetWidth;
+      let tagsLength = this.$refs.tagsList.offsetWidth;
+      let tagLength = tag.offsetWidth;
+      let tagLeft = tag.offsetLeft;
+      if (outerLength > tagsLength) {
+        this.tagBodyLeft = 0;
+      } else if (tagLeft < -this.tagBodyLeft) {
+        this.tagBodyLeft = -tagLeft;
+      } else if (
+        tagLeft > -this.tagBodyLeft &&
+        tagLeft + tagLength < -this.tagBodyLeft + outerLength
+      ) {
+        this.tagBodyLeft = Math.min(0, outerLength - tagLength - tagLeft - 80);
+      } else {
+        this.tagBodyLeft = -(tagLeft + tagLength - (outerLength - 80));
+      }
+    },
     getTagName(name) {
-        this.$nextTick(()=>{
-            
-        })
+      this.$nextTick(() => {
+        let tags = this.$refs.tag;
+        tags.forEach((item, index) => {
+          if (item.name === name) {
+            let tag = tags[index].$el;
+            this.moveToView(tag);
+          }
+        });
+      });
     }
   },
   watch: {
-      $route(to) {
-        this.getTagName(to.name)
-      }
+    $route(to) {
+      this.getTagName(to.name);
+    }
   }
 };
 </script>
@@ -93,12 +123,12 @@ export default {
     border-radius: 0;
     padding: 0 5px;
   }
-  .tags-list{
-      display: inline-block;
-      position: absolute;
-      padding: 0 60px 0 40px;
-      z-index: 9;
-      white-space: nowrap;
+  .tags-list {
+    display: inline-block;
+    position: absolute;
+    padding: 0 60px 0 40px;
+    z-index: 9;
+    white-space: nowrap;
   }
   .left {
     position: absolute;

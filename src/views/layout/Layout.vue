@@ -4,7 +4,12 @@
             <Sidebar class="sidebar" :menuList="menuList" :isCollapsed="isCollapsed"></Sidebar>
             <div class="container">
                 <Header @collapsedSider="collapsedSider"></Header>
-                <Tags :tagList="tagList" @tagClose="tagClose"></Tags>
+                <Tags 
+                :tagList="tagList" 
+                @tagClose="tagClose"
+                @handleCloseAll="handleCloseAll"
+                @handleCloseOther="handleCloseOther"
+                ></Tags>
                 <Content class="content">
                   <router-view></router-view>
                 </Content>
@@ -15,7 +20,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-import { getNewTagList, closeTags } from '../../libs/util.js'
+import { getNewTagList, closeTags, keepTags } from '../../libs/util.js'
 import routerConfig from '../../router/routerConfig.js'
 import Sidebar from './Sidebar'
 import Header from './Header'
@@ -66,6 +71,17 @@ export default {
       }else{
         this.$router.push(filterArray[length])
       }
+    },
+    handleCloseAll() {
+      this.updateTagList([])
+      this.$router.push({
+        name: 'Home'
+      })
+    },
+    handleCloseOther(currentTag) {
+      let keepTag = keepTags(this.tagList,currentTag)
+      this.updateTagList(keepTag)
+      this.$router.push(keepTag[0])
     }
   }
 };

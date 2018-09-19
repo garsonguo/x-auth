@@ -36,3 +36,15 @@ export const closeTags = (currentList,tagName) => {
     })
     return newlist
 }
+
+/** 
+ * @param {*} tagName 要保留的标签名
+ * @description {*} 关闭其他保留标签名
+ */
+export const keepTags = (currentList,tagName) => {
+    let newlist = [...currentList]
+    newlist = newlist.filter((value) => {
+        return value.name === tagName
+    })
+    return newlist
+}
