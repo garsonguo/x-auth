@@ -1,7 +1,7 @@
 <template>
     <div>
         <Layout class="layout">
-            <Sidebar class="sidebar" :menuList="menuList" :isCollapsed="isCollapsed" @handleOnSelect="handleOnSelect"></Sidebar>
+            <Sidebar class="sidebar" :menuList="menuList" :isCollapsed="isCollapsed"></Sidebar>
             <div class="container">
                 <Header @collapsedSider="collapsedSider"></Header>
                 <Tags :tagList="tagList" @tagClose="tagClose"></Tags>
@@ -15,6 +15,8 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import { getNewTagList, closeTags } from '../../libs/util.js'
+import routerConfig from '../../router/routerConfig.js'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import Tags from './Tags'
@@ -28,30 +30,12 @@ export default {
     return {
       isCollapsed: false,
       routeList: null,
-      menuList:[{
-          id: '1',
-          name: 'Home',
-          icon: 'ios-navigate',
-          path: '/Home'
-      },{
-          id: '2',
-          name: 'About',
-          icon: 'ios-navigate',
-          children: [{
-            id: '2-1',
-            name: 'About1',
-            icon: 'ios-navigate',
-            path: '/About/About1'
-          },{
-            id: '2-1',
-            name: 'About2',
-            icon: 'ios-navigate',
-            path: '/About/About2'
-          }]
-      }]
+      menuList:[]
     };
   },
-  mounted(){},
+  mounted(){
+    this.menuList = routerConfig
+  },
   computed: {
     menuitemClasses() {
       return ["menu-item", this.isCollapsed ? "collapsed-menu" : ""];
@@ -60,6 +44,12 @@ export default {
       'tagList'
     ])
   },
+  watch: {
+    $route(newRoute) {
+      let list = getNewTagList(this.tagList, newRoute)
+      this.updateTagList(list)
+    }
+  },
   methods: {
     ...mapMutations([
       'updateTagList'
@@ -67,26 +57,15 @@ export default {
     collapsedSider(isCollapsed) {
       this.isCollapsed = isCollapsed
     },
-    handleOnSelect(item) {
-      let _this = this
-      let nameArray = []
-      _this.tagList.forEach(function(value,key){
-        nameArray.push(value.name)
-      })
-      let nameA2= [...new Set(nameArray)]
-      if(nameA2.indexOf(item)===-1){
-        _this.tagList.push({
-          name: item,
-          path: _this.$route.path
-        })
+    tagClose(name) {
+      let filterArray = closeTags(this.tagList, name)
+      this.updateTagList(filterArray)
+      const length =filterArray.length-1
+      if(length===-1){
+        this.$router.push({name:'Home'})
+      }else{
+        this.$router.push(filterArray[length])
       }
-      this.updateTagList(_this.tagList)
-    },
-    tagClose(item) {
-      let filterArray = this.tagList.filter((value)=>{
-        return value.name != item.name
-      })
-      this.tagList = filterArray
     }
   }
 };

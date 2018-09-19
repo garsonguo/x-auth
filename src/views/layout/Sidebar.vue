@@ -4,7 +4,7 @@
             <div class="title">
                 x-auth
             </div>
-            <Menu @on-select="handleOnSelect" :active-name="$route.name" :open-names="openName" theme="dark" width="auto" :class="menuitemClasses">
+            <Menu :active-name="$route.name" :open-names="openName" theme="dark" width="auto" :class="menuitemClasses">
                 <template v-for="item in menuList">
                     <MenuItem :name="item.name" v-if="!item.children">
                       <router-link :to="item.path">
@@ -59,9 +59,6 @@ export default {
   methods: {
     getOpenName() {
       this.openName.push(this.$route.fullPath.split("/")[1]);
-    },
-    handleOnSelect(item) {
-      this.$emit('handleOnSelect',item)
     }
   }
 };

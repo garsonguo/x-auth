@@ -25,7 +25,7 @@
                     Home
                 </router-link>
             </Tag>
-            <Tag v-for="item in tagList" type="dot" closable :color="isCrrentTag(item)?'primary':'default'" :key="item.path" @on-close="tagClose">
+            <Tag v-for="item in tagList" type="dot" closable @on-close="tagClose" :name="item.name" :color="isCrrentTag(item)?'primary':'default'" :key="item.path">
                 <router-link :to="item.path">
                     {{item.name}}
                 </router-link>
@@ -48,8 +48,8 @@ export default {
   },
   computed: {},
   methods: {
-    tagClose(item) {
-      this.$emit("tagClose", item);
+    tagClose(event,name) {
+      this.$emit("tagClose", name);
     },
     isCrrentTag(item) {
       let isCurrent = this.$route.name;
@@ -59,17 +59,27 @@ export default {
       return false;
     },
     handleBack() {
-       var Length = this.$refs.tags.offsetWidth-100;
-       var tagsLength = this.$refs.tagsList.offsetWidth;
-       if(tagsLength>length){
+       let length = this.$refs.tags.offsetWidth-100;
+       let tagsLength = this.$refs.tagsList.offsetWidth;
+       if(tagsLength<length){
            return
        }else {
-           this.tagBodyLeft = tagsLength - length
+           this.tagBodyLeft = length - tagsLength
        }
     },
     handleForward() {},
     handleCloseAll() {},
-    handleCloseOther() {}
+    handleCloseOther() {},
+    getTagName(name) {
+        this.$nextTick(()=>{
+            
+        })
+    }
+  },
+  watch: {
+      $route(to) {
+        this.getTagName(to.name)
+      }
   }
 };
 </script>
@@ -88,6 +98,7 @@ export default {
       position: absolute;
       padding: 0 60px 0 40px;
       z-index: 9;
+      white-space: nowrap;
   }
   .left {
     position: absolute;
