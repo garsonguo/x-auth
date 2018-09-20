@@ -66,6 +66,9 @@ export default {
           this.handleLogin(_this.modelLogin).then(res=>{
               if(res){
                 this.$Message.success("登录成功");
+                _this.$router.push({
+                  name: 'Home'
+                })
               }
           })
         }
