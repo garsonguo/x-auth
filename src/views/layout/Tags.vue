@@ -1,12 +1,12 @@
 <template>
     <div class="tags" ref="tags">
         <div class="left">
-            <Button type="default" @click="handleBack">
+            <Button type="default" @click="handleScroll(240)">
                 <Icon type="ios-arrow-back" size="16"/>
             </Button>
         </div>
         <div class="right">
-            <Button type="default" @click="handleForward">
+            <Button type="default" @click="handleScroll(-240)">
                 <Icon type="ios-arrow-forward" size="16"/>
             </Button>
             <Dropdown placement="bottom-end" @on-click="handleClose">
@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       tagBodyLeft: 0
-    }
+    };
   },
   methods: {
     tagClose(event, name) {
@@ -65,16 +65,33 @@ export default {
       }
       return false;
     },
-    handleBack() {},
-    handleForward() {},
-    handleClose(name) {
-        if(name==='closeAll'){
-            this.$emit("handleCloseAll")
-        }else{
-            let currentRoute = this.$route.name
-            this.$emit("handleCloseOther", currentRoute)
+    handleScroll(offset) {
+      let outerLength = this.$refs.tags.offsetWidth;
+      let tagsLength = this.$refs.tagsList.offsetWidth;
+      if (offset > 0) {
+        this.tagBodyLeft = Math.min(0, this.tagBodyLeft + offset);
+      } else {
+        if (outerLength < tagsLength) {
+          if (this.tagBodyLeft < -(tagsLength - outerLength)) {
+            this.tagBodyLeft = this.tagBodyLeft;
+          } else {
+            this.tagBodyLeft = Math.max(
+              this.tagBodyLeft + offset,
+              outerLength - tagsLength
+            );
+          }
+        } else {
+          this.tagBodyLeft = 0;
         }
-        
+      }
+    },
+    handleClose(name) {
+      if (name === "closeAll") {
+        this.$emit("handleCloseAll");
+      } else {
+        let currentRoute = this.$route.name;
+        this.$emit("handleCloseOther", currentRoute);
+      }
     },
     moveToView(tag) {
       let outerLength = this.$refs.tags.offsetWidth;

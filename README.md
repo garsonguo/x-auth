@@ -33,3 +33,4 @@ yarn run lint
 关闭就好，别手贱，这个看看就好，按照这个弄，我环境就崩了:https://segmentfault.com/q/1010000013227727?utm_source=tag-newest
 4. 引入css预编译器   Vue CLI 项目天生支持 PostCSS、CSS Modules 和包含 Sass、Less、Stylus 在内的预处理器，只需安装即可
 4.1. https://cli.vuejs.org/zh/guide/css.html#%E5%BC%95%E7%94%A8%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90
+5. VsCode读取项目文件的Eslint规则 保存时自动修复格式错误：https://juejin.im/post/5b9dee8ff265da0afe62d1dd
