@@ -10,7 +10,7 @@
                 <Icon type="ios-arrow-forward" size="16"/>
             </Button>
             <Dropdown placement="bottom-end" @on-click="handleClose">
-                <Button href="javascript:void(0)" type="default">
+                <Button type="default">
                     <Icon type="md-close"></Icon>
                 </Button>
                 <DropdownMenu slot="list">

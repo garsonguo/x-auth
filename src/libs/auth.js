@@ -14,10 +14,19 @@ import Cookies from 'js-cookie'
  }
 
  /**
- * @param {*} token保存到cookie
- * @description 设置token
+ * @param {*} token
+ * @description 设置token保存到cookie
  */
 
 export const setToken = (token) => {
     Cookies.set('token', token, {expires: 1})
+}
+
+ /**
+ * @param {*} token的名字
+ * @description 删除cookie中的token
+ */
+
+export const deleteToken = () => {
+    Cookies.remove('token')
 }

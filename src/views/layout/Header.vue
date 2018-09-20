@@ -12,11 +12,21 @@
                     </BreadcrumbItem>
                 </template>
             </Breadcrumb>
+            <Dropdown class="logout" placement="bottom-end" @on-click="handleLogout">
+                <a href="javascript:void(0)">
+                  <img class="logo" src="../../assets/logo.png">
+                  <Icon type="ios-arrow-down"></Icon>
+                </a>
+                <DropdownMenu slot="list">
+                    <DropdownItem name="closeAll">退出登录</DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
         </Header>
     </div>
 </template>
 
 <script>
+import { deleteToken } from '../../libs/auth.js'
 export default {
   data() {
     return {
@@ -44,6 +54,12 @@ export default {
     collapsedSider() {
       this.isCollapsed = !this.isCollapsed;
       this.$emit("collapsedSider", this.isCollapsed);
+    },
+    handleLogout() {
+      deleteToken()
+      this.$router.push({
+        name: 'Login'
+      })
     }
   }
 };
@@ -63,6 +79,18 @@ export default {
   }
   .rotate-icon {
     transform: rotate(-90deg);
+  }
+  .logout{
+    float: right;
+    margin-right: 20px;
+  }
+  .logo{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    vertical-align: middle;
+    background-color: red;
+    margin-right: 5px;
   }
 }
 </style>
