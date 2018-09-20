@@ -1,3 +1,7 @@
+<style lang="less">
+ @import './login.less';
+</style>
+
 <template>
     <div class="login">
         <Card class="form" style="width:300px">
@@ -77,24 +81,3 @@ export default {
   }
 };
 </script>
-
-<style scoped lang="less">
-.login {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  .form {
-    position: absolute;
-    top: 40%;
-    right: 10%;
-    transform: translateY(-50%);
-    .tooltip {
-      text-align: center;
-      color: #c3c3c3;
-      font-size: 10px;
-    }
-  }
-}
-</style>

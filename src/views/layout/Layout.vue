@@ -22,9 +22,9 @@
 import { mapState, mapMutations } from 'vuex'
 import { getNewTagList, closeTags, keepTags } from '../../libs/util.js'
 import routerConfig from '../../router/routerConfig.js'
-import Sidebar from './Sidebar'
-import Header from './Header'
-import Tags from './Tags'
+import Sidebar from './sidebar/Sidebar'
+import Header from './header/Header.vue'
+import Tags from './tags/Tags'
 export default {
   components:{
     Sidebar,
@@ -88,17 +88,5 @@ export default {
 </script>
 
 <style scoped lang='less'>
-.layout {
-  flex-direction: row;
-  .container {
-    flex: auto;
-    .content{
-        height: calc( 100vh - 64px );
-        overflow: auto;
-        padding:15px;
-        background-color: #fff;
-        min-height: 260px;
-    }
-  }
-}
+@import './layout.less';
 </style>

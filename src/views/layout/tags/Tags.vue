@@ -1,3 +1,7 @@
+<style scoped lang='less'>
+@import './tags.less';
+</style>
+
 <template>
     <div class="tags" ref="tags">
         <div class="left">
@@ -130,37 +134,3 @@ export default {
   }
 };
 </script>
-
-<style scoped lang='less'>
-.tags {
-  height: 36px;
-  position: relative;
-  .ivu-btn {
-    height: 36px;
-    border-radius: 0;
-    padding: 0 5px;
-  }
-  .tags-list {
-    display: inline-block;
-    position: absolute;
-    padding: 0 60px 0 40px;
-    z-index: 9;
-    white-space: nowrap;
-  }
-  .left {
-    position: absolute;
-    left: 0;
-    z-index: 10;
-  }
-  .right {
-    position: absolute;
-    right: 0;
-    z-index: 10;
-  }
-  .ivu-tag-text {
-    a {
-      color: #333;
-    }
-  }
-}
-</style>

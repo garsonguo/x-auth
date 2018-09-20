@@ -1,3 +1,7 @@
+<style scoped lang='less'>
+@import './header.less';
+</style>
+
 <template>
     <div>
         <Header :style="{padding: 0}" class="header layout-header-bar">
@@ -14,7 +18,7 @@
             </Breadcrumb>
             <Dropdown class="logout" placement="bottom-end" @on-click="handleLogout">
                 <a href="javascript:void(0)">
-                  <img class="logo" src="../../assets/logo.png">
+                  <img class="logo" src="../../../assets/logo.png">
                   <Icon type="ios-arrow-down"></Icon>
                 </a>
                 <DropdownMenu slot="list">
@@ -26,7 +30,7 @@
 </template>
 
 <script>
-import { deleteToken } from '../../libs/auth.js'
+import { deleteToken } from '../../../libs/auth.js'
 export default {
   data() {
     return {
@@ -64,33 +68,3 @@ export default {
   }
 };
 </script>
-
-<style scoped lang='less'>
-.header {
-  background-color: #fff;
-  .ivu-icon:hover {
-    cursor: pointer;
-  }
-  .bread-crumb {
-    display: inline-block;
-  }
-  .menu-icon {
-    transition: all 0.3s;
-  }
-  .rotate-icon {
-    transform: rotate(-90deg);
-  }
-  .logout{
-    float: right;
-    margin-right: 20px;
-  }
-  .logo{
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    vertical-align: middle;
-    background-color: red;
-    margin-right: 5px;
-  }
-}
-</style>
