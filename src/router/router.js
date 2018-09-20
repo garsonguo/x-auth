@@ -1,11 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../views/layout/Layout.vue'
+import iView from 'iview'
+import { getToken } from '../libs/auth.js'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
+    {
+      path: '/',
+      name: 'Login',
+      component: () => import('../views/login/Login.vue'),
+    },
     {
       path: '/',
       name: 'Layout',
@@ -26,27 +33,38 @@ export default new Router({
         path: 'About1',
         name: 'About1',
         component: () => import('../views/About1.vue')
-      },{
-        path: 'About2',
-        name: 'About2',
-        component: () => import('../views/About2.vue')
-      },{
-        path: 'About3',
-        name: 'About3',
-        component: () => import('../views/About3.vue')
-      },{
-        path: 'About4',
-        name: 'About4',
-        component: () => import('../views/About4.vue')
-      },{
-        path: 'About5',
-        name: 'About5',
-        component: () => import('../views/About5.vue')
-      },{
-        path: 'About6',
-        name: 'About6',
-        component: () => import('../views/About6.vue')
       }]
     }
   ]
 })
+
+
+// 路由守卫
+router.beforeEach((to, from, next) => {
+  iView.LoadingBar.start()
+  const token = getToken()
+  if(!token && to.name === 'Login'){
+    // 未登录且要跳转的页面是登录页
+    next()
+  }else if(!token && to.name !== 'Login'){
+    // 未登录且要跳转的页面不是登录页
+    next({
+      name:'Login'
+    })
+  }else if(token && to.name === 'Login'){
+    // 未登录且要跳转的页面不是登录页
+    next({
+      name:'Home'
+    })
+  }else{
+    next()
+  }
+})
+
+
+router.afterEach(()=>{
+  iView.LoadingBar.finish()
+  window.scrollTo(0, 0)
+})
+
+export default router
