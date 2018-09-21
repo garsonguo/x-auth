@@ -26,7 +26,7 @@
         <div class="tags-list" ref="tagsList" :style="{left: tagBodyLeft + 'px'}">
             <Tag type="dot" color="primary" :color="isCrrentTag({name: 'Home',path: '/Home'})?'primary':'default'" key="Home">
                 <router-link to="/Home">
-                    Home
+                    首页
                 </router-link>
             </Tag>
             <Tag 
@@ -39,7 +39,7 @@
             :color="isCrrentTag(item)?'primary':'default'" 
             :key="`tag-${index}`">
                 <router-link :to="item.path">
-                    {{item.name}}
+                    {{item.meta.title}}
                 </router-link>
             </Tag>
         </div>

@@ -12,14 +12,14 @@
       span {
         display: inline-block;
         overflow: hidden;
-        width: 69px;
+        // width: 69px;
         text-overflow: ellipsis;
         white-space: nowrap;
         vertical-align: bottom;
         transition: width 0.2s ease 0.2s;
       }
       i {
-        transform: translateX(0px);
+        // transform: translateX(0px);
         transition: font-size 0.2s ease, transform 0.2s ease;
         vertical-align: middle;
         font-size: 16px;
@@ -62,6 +62,11 @@
           }
         }
       }
+      .ivu-menu-submenu-title{
+        .ivu-icon{
+          margin-left: -4px;
+        }
+      }
       .ivu-menu-submenu:hover,
       .ivu-menu-opened{
         .ivu-menu{
@@ -75,7 +80,7 @@
             background-color: #2d8cf0!important;
           }
           span{
-            width: 69px;
+            width: 100px;
           }
         }
       }

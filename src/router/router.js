@@ -12,27 +12,41 @@ const router = new Router({
       path: '/',
       name: 'Login',
       component: () => import('../views/login/Login.vue'),
+      meta:{
+        title:'登录'
+      }
     },
     {
       path: '/',
       name: 'Layout',
       component: Layout,
       redirect: 'Home',
+      meta: {
+        title: '首页'
+      },
       children: [{
         path: '/Home',
         name: 'Home',
-        component: () => import('../views/home/Home.vue')
+        component: () => import('../views/home/Home.vue'),
+        meta:{
+          title:'首页'
+        }
       }]
     },
     {
-      path:'/About',
-      name:'About',
+      path:'/SystemSet',
+      name:'SystemSet',
       component: Layout,
-      redirect: 'noredirect',
+      meta:{
+        title: '系统设置'
+      },
       children: [{
-        path: 'About1',
-        name: 'About1',
-        component: () => import('../views/About1.vue')
+        path: 'MenuManage',
+        name: 'MenuManage',
+        component: () => import('../views/systemSet/MenuManage.vue'),
+        meta: {
+          title: '菜单管理'
+        }
       }]
     }
   ]

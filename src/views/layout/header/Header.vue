@@ -8,11 +8,11 @@
             <Icon @click.native="collapsedSider" :class="rotateIcon" :style="{margin: '0 20px'}" type="md-menu" size="24"></Icon>
             <Breadcrumb class="bread-crumb">
                 <BreadcrumbItem :to="{path:'/'}">
-                    Home
+                    首页
                 </BreadcrumbItem>
                 <template v-for="item in routeList" v-if="item.name!=='Home' && item.name!=='Layout'">
                     <BreadcrumbItem :key="item.path">
-                        {{item.name}}
+                        {{item.meta.title}}
                     </BreadcrumbItem>
                 </template>
             </Breadcrumb>

@@ -8,7 +8,7 @@
             <div class="title">
                 x-auth
             </div>
-            <Menu :active-name="$route.name" :open-names="openName" theme="dark" width="auto" :class="menuitemClasses">
+            <Menu accordion :active-name="$route.name" :open-names="openName" theme="dark" width="auto" :class="menuitemClasses">
                 <template v-for="item in menuList">
                     <MenuItem :name="item.name" v-if="!item.children">
                       <router-link :to="item.path">
@@ -18,7 +18,7 @@
                     </MenuItem>
                     <Submenu v-else :name="item.name">
                       <template slot="title">
-                          <Icon type="ios-paper" />
+                          <Icon :type="item.icon" />
                           <span>{{item.name}}</span>
                       </template>
                       <MenuItem :name="child.name" v-for="child in item.children">
