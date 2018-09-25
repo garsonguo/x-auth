@@ -35,3 +35,4 @@ yarn run lint
 4.1. https://cli.vuejs.org/zh/guide/css.html#%E5%BC%95%E7%94%A8%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90
 5. VsCode读取项目文件的Eslint规则 保存时自动修复格式错误：https://juejin.im/post/5b9dee8ff265da0afe62d1dd
 6. 如何判断DOM已经渲染完毕：https://segmentfault.com/q/1010000011207184
+7. 树形下拉框：https://vue-treeselect.js.org/
