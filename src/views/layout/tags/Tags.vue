@@ -117,7 +117,7 @@ export default {
     },
     getTagName(name) {
       this.$nextTick(() => {
-        let tags = this.$refs.tag;
+        let tags = this.$refs.tag || [];
         tags.forEach((item, index) => {
           if (item.name === name) {
             let tag = tags[index].$el;
