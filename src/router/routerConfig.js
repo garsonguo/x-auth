@@ -18,68 +18,68 @@ export default [{
     }]
 },{
     id:'3',
-    name:'',
+    name:'AuthManage',
     title: '权限管理',
     icon: 'ios-construct',
     children: [{
         id: '3-1',
-        name: '',
+        name: 'Function',
         title: '功能管理',
         icon: 'ios-arrow-forward',
-        path: ''
+        path: '/AuthManage/Function'
     },{
         id: '3-2',
-        name:'',
+        name:'Role',
         title: '角色管理',
         icon: 'ios-arrow-forward',
-        path: ''
+        path: '/AuthManage/Role'
     },{
         id: '3-3',
-        name:'',
+        name:'RoleAuth',
         title: '角色权限管理',
         icon: 'ios-arrow-forward',
-        path: ''
+        path: '/AuthManage/RoleAuth'
     },{
         id: '3-4',
-        name:'',
+        name:'RoleUser',
         title: '角色用户管理',
         icon: 'ios-arrow-forward',
-        path: ''
+        path: '/AuthManage/RoleUser'
     },{
         id: '3-5',
-        name:'',
+        name:'UserRole',
         title: '用户角色管理',
         icon: 'ios-arrow-forward',
-        path: ''
+        path: '/AuthManage/UserRole'
     }]
 },{
     id:'4',
     title: '组织构架',
-    name:'',
+    name:'OrgStructure',
     icon: 'ios-person-add',
     children: [{
         id: '4-1',
-        name:'',
+        name:'DepManage',
         title: '部门管理',
         icon: 'ios-arrow-forward',
-        path: ''
+        path: '/OrgStructure/DepManage'
     },{
         id: '4-2',
-        name:'',
+        name:'PosManage',
         title: '职位管理',
         icon: 'ios-arrow-forward',
-        path: ''
+        path: '/OrgStructure/PosManage'
     }]
 },{
     id:'5',
     title: '用户管理',
-    name:'',
+    name:'UserManage',
     icon: 'ios-people',
     children: [{
         id: '5-1',
-        name:'',
+        name:'UserManage',
         title: '用户管理',
         icon: 'ios-arrow-forward',
-        path: ''
+        path: '/UserManage/UserManage'
     }]
 }]

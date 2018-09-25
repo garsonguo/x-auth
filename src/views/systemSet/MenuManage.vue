@@ -90,33 +90,46 @@
                     title: '系统',
                     expand: true,
                     children:[{
+                        id:'1',
                         title:'系统设置',
                         children: [{
+                            id:'1-1',
                             title:'菜单管理'
                         }]
                     },{
                         title:'权限管理',
+                        id:'2',
                         children: [{
+                            id:'2-1',
                             title:'功能管理'
                         },{
+                            id:'2-2',
                             title:'角色管理'
                         },{
+                            id:'2-3',
                             title:'角色权限管理'
                         },{
+                            id:'2-4',
                             title:'角色用户管理'
                         },{
+                            id:'2-5',
                             title:'用户角色管咯'
                         }]
                     },{
                         title:'组织构架',
+                        id:'3',
                         children: [{
+                            id:'3-1',
                             title:'部门管理'
                         },{
+                            id:'3-2',
                             title:'职位管理'
                         }]
                     },{
                         title:'用户管理',
+                        id:'4',
                         children: [{
+                            id:'4-1',
                             title:'用户管理'
                         }]
                     }]
@@ -141,16 +154,30 @@
             }
         },
         methods: {
+            initData() {
+                return {
+                    name: '',
+                    title: '',
+                    authCode: '',
+                    sort: 0,
+                    leftShow: false,
+                    lock: true,
+                    icon: ''
+                }
+            },
             handleTopMenu() {
                 this.subDis = !this.subDis
                 this.menuTitle = '正在添加顶级菜单'
+                this.systemForm = initData()
             },
             handleSubMenu() {
                 this.menuTitle = '正在添加子级菜单'
+                this.systemForm = initData()
             },
             handleDeleteMenu() {},
             selectChange(params) {
                 let title = params[0].title
+                let id = params[0].id
                 this.menuTitle = `正在编辑【${title}】`
                 this.systemForm = {
                     name: title,

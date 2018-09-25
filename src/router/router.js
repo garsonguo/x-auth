@@ -48,6 +48,90 @@ const router = new Router({
           title: '菜单管理'
         }
       }]
+    },
+    {
+      path:'/AuthManage',
+      name:'AuthManage',
+      component: Layout,
+      meta:{
+        title: '权限管理'
+      },
+      children: [{
+        path: 'Function',
+        name: 'Function',
+        component: () => import('../views/authManage/function/Function.vue'),
+        meta: {
+          title: '功能管理'
+        }
+      },{
+        path: 'Role',
+        name: 'Role',
+        component: () => import('../views/authManage/role/Role.vue'),
+        meta: {
+          title: '角色管理'
+        }
+      },{
+        path: 'RoleAuth',
+        name: 'RoleAuth',
+        component: () => import('../views/authManage/roleAuth/RoleAuth.vue'),
+        meta: {
+          title: '角色权限管理'
+        }
+      },{
+        path: 'RoleUser',
+        name: 'RoleUser',
+        component: () => import('../views/authManage/roleUser/RoleUser.vue'),
+        meta: {
+          title: '角色用户管理'
+        }
+      },{
+        path: 'UserRole',
+        name: 'UserRole',
+        component: () => import('../views/authManage/userRole/UserRole.vue'),
+        meta: {
+          title: '用户角色管理'
+        }
+      }]
+    },
+    {
+      path:'/OrgStructure',
+      name:'OrgStructure',
+      component: Layout,
+      meta:{
+        title: '组织构架'
+      },
+      children: [{
+        path: 'DepManage',
+        name: 'DepManage',
+        component: () => import('../views/orgStructure/depManage/DepManage.vue'),
+        meta: {
+          title: '部门管理'
+        }
+      },
+      {
+        path: 'PosManage',
+        name: 'PosManage',
+        component: () => import('../views/orgStructure/posManage/PosManage.vue'),
+        meta: {
+          title: '职位管理'
+        }
+      }]
+    },
+    {
+      path:'/UserManage',
+      name:'UserManage',
+      component: Layout,
+      meta:{
+        title: '用户管理'
+      },
+      children: [{
+        path: 'UserManage',
+        name: 'UserManage',
+        component: () => import('../views/userManage/UserManage.vue'),
+        meta: {
+          title: '用户管理'
+        }
+      }]
     }
   ]
 })
