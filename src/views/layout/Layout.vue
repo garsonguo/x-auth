@@ -68,6 +68,7 @@ export default {
     tagClose(name) {
       let filterArray = closeTags(this.tagList, name)
       this.updateTagList(filterArray)
+      this.tagListCookie = getTagCookie()
       const length =filterArray.length-1
       if(length===-1){
         this.$router.push({name:'Home'})
