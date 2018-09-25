@@ -53,8 +53,9 @@ export default {
   },
   watch: {
     $route(newRoute) {
-      let list = getNewTagList(this.tagList, newRoute)
+      let list = getNewTagList(this.tagListCookie, newRoute)
       this.updateTagList(list)
+      this.tagListCookie = getTagCookie()
     }
   },
   methods: {

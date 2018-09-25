@@ -8,7 +8,13 @@
             <div class="title">
                 x-auth
             </div>
-            <Menu ref="sidebar" accordion :active-name="activeName" :open-names="openName" theme="dark" width="auto" :class="menuitemClasses">
+            <Menu ref="sidebar" 
+            accordion 
+            :active-name="activeName" 
+            :open-names="openName" 
+            theme="dark" 
+            width="auto" 
+            :class="menuitemClasses">
                 <template v-for="item in menuList">
                     <MenuItem :name="item.name" v-if="!item.children">
                       <router-link :to="item.path">
@@ -62,18 +68,21 @@ export default {
     }),20)
   },
   watch: {
+    $route() {
+      this.activeName = this.$route.name
+      this.getOpenName()
+    },
     activeName(){
-      let _this = this
-      // this.set(this.activeName, this.$route.name)
-      this.$nextTick(()=>{
-        _this.$refs.sidebar.updateActiveName()
-      })
+      // let _this = this
+      // setTimeout(this.$nextTick(()=>{
+      //   _this.$refs.sidebar.updateActiveName()
+      // }),20)
     },
     openName(){
-      let _this = this
-      setTimeout(_this.$nextTick(()=>{
-        _this.$refs.sidebar.updateOpened()
-      }),20)
+      // let _this = this
+      // setTimeout(_this.$nextTick(()=>{
+      //   _this.$refs.sidebar.updateOpened()
+      // }),20)
     }
   },
   computed: {
@@ -87,10 +96,11 @@ export default {
   methods: {
     getOpenName() {
       let _this = this
-      this.openName.push(this.$route.fullPath.split("/")[1]);
-      this.$nextTick(()=>{
+      this.openName = []
+      this.openName.push(this.$route.fullPath.split("/")[1])
+      setTimeout(_this.$nextTick(()=>{
         _this.$refs.sidebar.updateOpened()
-      })
+      }),20)
     }
   }
 };
