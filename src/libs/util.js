@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 /**
  * @param {*} currentList 现有标签导航列表
  * @param {*} newRoute 新添加的路由原信息对象
@@ -47,4 +48,23 @@ export const keepTags = (currentList,tagName) => {
         return value.name === tagName
     })
     return newlist
+}
+
+/** 
+ * @param {*} tagList tags打开的标签列表
+ * @description {*} 将taglist存储到cookie，实现刷新浏览器，tag打开的标签不变
+ */
+export const setTagCookie = (tagList) =>{
+    Cookies.remove('tagList')
+    Cookies.set('tagList',tagList)
+}
+
+/** 
+ * @param {*} tagList tags打开的标签列表
+ * @description {*} 获取cookie中的taglist
+ */
+export const getTagCookie = () =>{
+    let result = []
+    result = Cookies.get('tagList')
+    return JSON.parse(result)
 }

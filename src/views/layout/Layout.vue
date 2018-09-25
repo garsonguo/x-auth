@@ -5,7 +5,7 @@
             <div class="container">
                 <Header @collapsedSider="collapsedSider"></Header>
                 <Tags 
-                :tagList="tagList" 
+                :tagList="tagListCookie" 
                 @tagClose="tagClose"
                 @handleCloseAll="handleCloseAll"
                 @handleCloseOther="handleCloseOther"
@@ -20,7 +20,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-import { getNewTagList, closeTags, keepTags } from '../../libs/util.js'
+import { getNewTagList, closeTags, keepTags, getTagCookie } from '../../libs/util.js'
 import routerConfig from '../../router/routerConfig.js'
 import Sidebar from './sidebar/Sidebar'
 import Header from './header/Header.vue'
@@ -35,11 +35,13 @@ export default {
     return {
       isCollapsed: false,
       routeList: null,
-      menuList:[]
+      menuList:[],
+      tagListCookie: []
     };
   },
   mounted(){
     this.menuList = routerConfig
+    this.tagListCookie = getTagCookie()
   },
   computed: {
     menuitemClasses() {
