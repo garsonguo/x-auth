@@ -36,3 +36,5 @@ yarn run lint
 5. VsCode读取项目文件的Eslint规则 保存时自动修复格式错误：https://juejin.im/post/5b9dee8ff265da0afe62d1dd
 6. 如何判断DOM已经渲染完毕：https://segmentfault.com/q/1010000011207184
 7. 树形下拉框：https://vue-treeselect.js.org/
+8. iview在table中使用poptip：https://blog.csdn.net/yhy0901/article/details/81033181
+9. 局部变量如何穿透局部到全局，参照路径：/Users/xiaobog/Desktop/xiaobog/x-auth/src/views/authManage/function/Function.vue

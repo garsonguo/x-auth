@@ -1,6 +1,11 @@
 <style scoped lang="less">
 @import "./fuction.less";
 </style>
+<style scoped>
+.table >>> .ivu-poptip-inner {
+  text-align: left;
+}
+</style>
 
 <template>
     <div>
@@ -26,18 +31,30 @@
         <div class="table">
             <div class="btn">
                 <Button type="primary" @click="add">新增</Button>
-                <Button style="margin-left: 8px">删除</Button>
+                <Button style="margin-left: 8px" :disabled="disabled">删除</Button>
             </div>
-            <Table border ref="selection" :columns="funColumns" :data="funData"></Table>
+            <Table border 
+            ref="selection" 
+            :columns="funColumns" 
+            :data="funData"
+            @on-select="handleSelect"
+            @on-select-all="handleSelectAll"
+            @on-selection-change="handleSelectChange"
+            ></Table>
+            <div class="pages">
+              <Page class="pull-right" 
+              :total="20" 
+              :current="1" 
+              show-sizer
+              :show-total="showTatal"
+              @on-change="handlePage"
+               />
+            </div>
         </div>
         <Modal
             v-model="modalShow"
             :title="modalTitle"
-            ok-text="提交"
-            cancel-text="关闭"
-            @on-ok="submit"
-            mask-closable="false"
-            @on-cancel="cancel">
+            :mask-closable="maskClosable">
             <Form
             ref="funModel"
             :model="funModel"
@@ -57,6 +74,10 @@
                     <Cascader :data="moduleList" v-model="funModel.module"></Cascader>
                 </FormItem>
             </Form>
+            <div slot="footer">
+              <Button @click="handleCancel">关闭</Button>
+              <Button type="info" @click="handleSubmit">提交</Button>
+            </div>
         </Modal>
     </div>
 </template>
@@ -68,6 +89,9 @@ export default {
       searchModel: {},
       modalShow: false,
       modalTitle: "",
+      showTatal: true,
+      maskClosable: false,
+      disabled: true,
       funModel: {},
       funRules: {
         functionName: [
@@ -77,18 +101,17 @@ export default {
             trigger: "blur"
           }
         ],
-         functionCode: [
+        functionCode: [
           {
             required: true,
             message: "功能编码不能为空",
             trigger: "blur"
           }
         ],
-         module: [
+        module: [
           {
             required: true,
-            message: "模块不能为空",
-            trigger: "blur"
+            message: "模块不能为空"
           }
         ]
       },
@@ -109,7 +132,7 @@ export default {
         },
         {
           title: "功能编码",
-          key: "moduleCode"
+          key: "functionCode"
         },
         {
           title: "操作",
@@ -126,22 +149,26 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.edit(params.index);
+                      this.edit(params.row);
                     }
                   }
                 },
                 "编辑"
               ),
               h(
-                "a",
+                "Poptip",
                 {
+                  props: {
+                    confirm: true,
+                    title: "你确定要删除该条信息吗?"
+                  },
                   on: {
-                    click: () => {
+                    "on-ok": () => {
                       this.remove(params.index);
                     }
                   }
                 },
-                "删除"
+                [h("a", {}, "删除")]
               )
             ]);
           }
@@ -151,7 +178,8 @@ export default {
         {
           moduleName: "功能管理1",
           functionName: "编辑功能",
-          moduleCode: "function_edit"
+          functionCode: "function_edit",
+          module: ["System", "SystemSet", "MenuManage"]
         }
       ],
       moduleList: [
@@ -228,17 +256,49 @@ export default {
     add() {
       this.modalTitle = "新增功能";
       this.modalShow = true;
+      this.funModel = {};
     },
-    edit() {},
-    remove() {},
-    submit() {},
-    cancel() {
+    edit(rowInfo) {
+      this.modalTitle = "编辑功能";
+      this.modalShow = true;
+      //
+      this.funModel = rowInfo;
+    },
+    remove(params) {
+      // 删除table行信息
+    },
+    handleCancel() {
       this.modalShow = false;
     },
-    showTree() {
-      this.treeShow = true;
+    handleSubmit() {
+      this.$refs["funModel"].validate(valid => {
+        if (valid) {
+          let model = this.funModel;
+          this.modalShow = false;
+          this.$Message.success("提交成功!");
+        } else {
+          this.$Message.success("提交失败!");
+        }
+      });
     },
-    selectChange() {}
+    handlePage(page) {
+      let currentPage = page;
+    },
+    handleSelect(param) {
+      // param 数组
+      let select = param;
+    },
+    handleSelectAll(param) {
+      // param 数组
+      let select = param;
+    },
+    handleSelectChange(param) {
+      if (param.length === 0) {
+        this.disabled = true;
+      } else {
+        this.disabled = false;
+      }
+    }
   }
 };
 </script>
