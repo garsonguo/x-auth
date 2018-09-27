@@ -277,7 +277,7 @@ export default {
           this.modalShow = false;
           this.$Message.success("提交成功!");
         } else {
-          this.$Message.success("提交失败!");
+          this.$Message.error("提交失败!");
         }
       });
     },
