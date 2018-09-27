@@ -88,11 +88,13 @@ export default {
         },
         {
           title: "角色名称",
-          key: "roleName"
+          key: "roleName",
+          sortable: true
         },
         {
           title: "角色编码",
-          key: "roleCode"
+          key: "roleCode",
+          sortable: true
         },
         {
           title: "操作",

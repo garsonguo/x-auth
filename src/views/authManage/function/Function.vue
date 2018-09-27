@@ -124,15 +124,18 @@ export default {
         },
         {
           title: "模块名称",
-          key: "moduleName"
+          key: "moduleName",
+          sortable: true
         },
         {
           title: "功能名称",
-          key: "functionName"
+          key: "functionName",
+          sortable: true
         },
         {
           title: "功能编码",
-          key: "functionCode"
+          key: "functionCode",
+          sortable: true
         },
         {
           title: "操作",
