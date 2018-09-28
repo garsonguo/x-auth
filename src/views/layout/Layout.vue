@@ -78,6 +78,7 @@ export default {
     },
     handleCloseAll() {
       this.updateTagList([])
+      this.tagListCookie = getTagCookie()
       this.$router.push({
         name: 'Home'
       })
@@ -85,6 +86,7 @@ export default {
     handleCloseOther(currentTag) {
       let keepTag = keepTags(this.tagList,currentTag)
       this.updateTagList(keepTag)
+      this.tagListCookie = getTagCookie()
       this.$router.push(keepTag[0])
     }
   }
