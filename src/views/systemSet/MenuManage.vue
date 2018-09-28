@@ -44,7 +44,7 @@
                         </p>
                         <Row>
                             <Col span="12">
-                                <Form :model="systemForm" :rules="systemRules" :label-width="100">
+                                <Form ref="systemForm" :model="systemForm" :rules="systemRules" :label-width="100">
                                     <FormItem label="名称" prop="name">
                                         <Input v-model="systemForm.name"></Input>
                                     </FormItem>
@@ -68,7 +68,7 @@
                                             <Option v-for="item in iconList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                                         </Select>
                                     </FormItem>
-                                    <Button type="primary" class="btn">提交</Button>
+                                    <Button type="primary" class="btn" @click="menuSubmit">提交</Button>
                                 </Form>
                             </Col>
                         </Row>
@@ -80,6 +80,7 @@
 </template>
 
 <script>
+import { saveMenu } from '../../service/systemSet.js'
     export default {
         data() {
             return {
@@ -188,6 +189,13 @@
                     lock: true,
                     icon: 'icon-fa'
                 }
+            },
+            menuSubmit() {
+                this.$refs.systemForm.validate((valid)=>{
+                    if(valid){
+                      saveMenu(this.systemForm)
+                    }
+                })
             }
         }
     }

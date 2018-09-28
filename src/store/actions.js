@@ -1,5 +1,5 @@
 import { login } from '../api/user.js'
-import { setToken } from '../libs/auth.js'
+import { setToken, setUserInfo } from '../libs/auth.js'
 
 export default {
      /**
@@ -10,7 +10,8 @@ export default {
         return new Promise((resolve, reject) => {
             login(formLogin).then(res => {
                 if(res.status === 200) {
-                    setToken(formLogin)
+                    setUserInfo(formLogin)
+                    setToken('x-auth')
                     resolve(true)
                 }else{
                     reject(res)
