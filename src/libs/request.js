@@ -4,7 +4,7 @@ import {
     getToken
 } from './auth.js'
 
-const baseUrl = 'https://www.easy-mock.com/mock/5ba33f89922af34dcd1e952e/x-auth'
+const baseUrl = 'http://127.0.0.1:3000'
 
 const service = axios.create({
     baseURL: baseUrl, // api的base_url
@@ -15,7 +15,7 @@ const service = axios.create({
 service.interceptors.request.use(config => {
     // Do something before request is sent
     const token = getToken()
-    if(token){
+    if (token) {
         config.headers['Authorization'] = token
     }
     return config

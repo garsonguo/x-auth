@@ -1,5 +1,5 @@
 <style lang="less">
- @import './login.less';
+@import "./login.less";
 </style>
 
 <template>
@@ -27,13 +27,13 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
       modelLogin: {
-        user: "",
-        password: ""
+        user: "admin",
+        password: "admin"
       },
       ruleLogin: {
         user: [
@@ -60,21 +60,19 @@ export default {
     };
   },
   methods: {
-    ...mapActions([
-      'handleLogin'
-    ]),
+    ...mapActions(["handleLogin"]),
     handleSubmit() {
-      let _this = this
+      let _this = this;
       this.$refs.refLogin.validate(valid => {
         if (valid) {
-          this.handleLogin(_this.modelLogin).then(res=>{
-              if(res){
-                this.$Message.success("登录成功");
-                _this.$router.push({
-                  name: 'Home'
-                })
-              }
-          })
+          this.handleLogin(_this.modelLogin).then(res => {
+            if (res) {
+              this.$Message.success("登录成功");
+              _this.$router.push({
+                name: "Home"
+              });
+            }
+          });
         }
       });
     }

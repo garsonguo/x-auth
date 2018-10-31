@@ -59,16 +59,19 @@
             :rules="userManageRules"
             style="width:400px;">
                 <FormItem label="账号名称" prop="accountName">
-                    <Input type="text" v-model="userManageModel.accountName"></Input>
+                    <Input type="text" v-model="userManageModel.account"></Input>
                 </FormItem>
                 <FormItem label="用户名称" prop="userName">
-                    <Input type="text" v-model="userManageModel.userName"></Input>
+                    <Input type="text" v-model="userManageModel.name"></Input>
                 </FormItem>
                 <FormItem label="用户邮箱" prop="userEmail">
-                    <Input type="text" v-model="userManageModel.userEmail"></Input>
+                    <Input type="text" v-model="userManageModel.email"></Input>
                 </FormItem>
-                <FormItem label="phone" prop="module">
+                <FormItem label="电话号码" prop="module">
                     <Input type="text" v-model="userManageModel.phone"></Input>
+                </FormItem>
+                <FormItem label="密码" prop="module">
+                    <Input type="text" v-model="userManageModel.password"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -80,6 +83,7 @@
 </template>
 
 <script>
+import { registered } from "../../api/user.js";
 export default {
   data() {
     return {
@@ -91,14 +95,14 @@ export default {
       disabled: true,
       userManageModel: {},
       userManageRules: {
-        accountName: [
+        account: [
           {
             required: true,
             message: "账号名称不能为空",
             trigger: "blur"
           }
         ],
-        userName: [
+        name: [
           {
             required: true,
             message: "用户名称不能为空",
@@ -178,7 +182,7 @@ export default {
           accountName: "admin",
           userName: "admin",
           userEmail: "123@163.com",
-          phone:'18627185963'
+          phone: "18627185963"
         }
       ]
     };
@@ -205,10 +209,14 @@ export default {
       this.$refs["userManageModel"].validate(valid => {
         if (valid) {
           let model = this.userManageModel;
-          this.modalShow = false;
-          this.$Message.success("提交成功!");
-        } else {
-          this.$Message.error("提交失败!");
+          registered(model).then(res => {
+            if (res.status === 200) {
+              this.modalShow = false;
+              this.$Message.success("提交成功!");
+            } else {
+              this.$Message.error("提交失败!");
+            }
+          });
         }
       });
     },
