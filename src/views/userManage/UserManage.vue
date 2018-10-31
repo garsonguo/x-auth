@@ -58,20 +58,20 @@
             :label-width="80"
             :rules="userManageRules"
             style="width:400px;">
-                <FormItem label="账号名称" prop="accountName">
+                <FormItem label="账号名称" prop="account">
                     <Input type="text" v-model="userManageModel.account"></Input>
                 </FormItem>
-                <FormItem label="用户名称" prop="userName">
+                <FormItem label="用户名称" prop="name">
                     <Input type="text" v-model="userManageModel.name"></Input>
                 </FormItem>
-                <FormItem label="用户邮箱" prop="userEmail">
+                <FormItem label="密码" prop="password">
+                    <Input type="text" v-model="userManageModel.password"></Input>
+                </FormItem>
+                <FormItem label="用户邮箱" prop="email">
                     <Input type="text" v-model="userManageModel.email"></Input>
                 </FormItem>
-                <FormItem label="电话号码" prop="module">
+                <FormItem label="电话号码" prop="phone">
                     <Input type="text" v-model="userManageModel.phone"></Input>
-                </FormItem>
-                <FormItem label="密码" prop="module">
-                    <Input type="text" v-model="userManageModel.password"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { registered } from "../../api/user.js";
+import { registered, queryUserList } from "../../api/user.js";
 export default {
   data() {
     return {
@@ -108,6 +108,20 @@ export default {
             message: "用户名称不能为空",
             trigger: "blur"
           }
+        ],
+        password: [
+          {
+            required: true,
+            message: "密码不能为空",
+            trigger: "blur"
+          }
+        ],
+        email: [
+          {
+            type: "email",
+            message: "email格式不对",
+            trigger: "blur"
+          }
         ]
       },
       treeShow: false,
@@ -119,21 +133,21 @@ export default {
         },
         {
           title: "账号名称",
-          key: "accountName",
+          key: "account",
           sortable: true
         },
         {
           title: "用户名称",
-          key: "userName",
+          key: "name",
           sortable: true
         },
         {
           title: "用户邮箱",
-          key: "userEmail",
+          key: "email",
           sortable: true
         },
         {
-          title: "phone",
+          title: "电话号码",
           key: "phone",
           sortable: true
         },
@@ -177,15 +191,13 @@ export default {
           }
         }
       ],
-      userManageData: [
-        {
-          accountName: "admin",
-          userName: "admin",
-          userEmail: "123@163.com",
-          phone: "18627185963"
-        }
-      ]
+      userManageData: []
     };
+  },
+  mounted() {
+    queryUserList().then(res => {
+      this.userManageData = res;
+    });
   },
   methods: {
     add() {

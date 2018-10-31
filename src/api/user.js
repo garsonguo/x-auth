@@ -27,3 +27,30 @@ export const registered = (registeredModal) => {
         })
     })
 }
+
+/**
+ * @param {*} loginModal登录model
+ * @description 调用登录服务端接口
+ */
+export const queryUserList = (params) => {
+    let url = ''
+    if (params) {
+        if (params.name || params.email) {
+            url = `${baseUrl}/auth/queryUserList?name=${params.name}&&email=${params.email}`
+        } else {
+            url = `${baseUrl}/auth/queryUserList`
+        }
+    } else {
+        url = `${baseUrl}/auth/queryUserList`
+    }
+
+    return new Promise((resolve, reject) => {
+        axios.get(url).then(res => {
+            if (res.status === 200) {
+                resolve(res.data.result)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}
