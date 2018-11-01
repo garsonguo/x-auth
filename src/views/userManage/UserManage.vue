@@ -59,10 +59,10 @@
             :rules="userManageRules"
             style="width:400px;">
                 <FormItem label="账号名称" prop="account">
-                    <Input type="text" v-model="userManageModel.account"></Input>
+                    <Input type="text" :disabled="adminDis" v-model="userManageModel.account"></Input>
                 </FormItem>
                 <FormItem label="用户名称" prop="name">
-                    <Input type="text" v-model="userManageModel.name"></Input>
+                    <Input type="text" :disabled="adminDis" v-model="userManageModel.name"></Input>
                 </FormItem>
                 <FormItem label="密码" prop="password">
                     <Input type="text" v-model="userManageModel.password"></Input>
@@ -98,6 +98,7 @@ export default {
       showTatal: true,
       maskClosable: false,
       disabled: true,
+      adminDis: false,
       userManageModel: {},
       userManageRules: {
         account: [
@@ -235,12 +236,18 @@ export default {
     },
     removeAll() {},
     add() {
+      this.adminDis = false;
       this.modalTitle = "新增功能";
       this.modalShow = true;
       this.userManageModel = {};
     },
     edit(rowInfo) {
       this.modalTitle = "编辑功能";
+      if (rowInfo.name === "admin") {
+        this.adminDis = true;
+      } else {
+        this.adminDis = false;
+      }
       this.modalShow = true;
       this.userManageModel = rowInfo;
     },
