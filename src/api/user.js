@@ -41,6 +41,8 @@ export const queryUserList = (params) => {
             url = `${baseUrl}/auth/queryUserList?account=${params.account}`
         } else if (params.email) {
             url = `${baseUrl}/auth/queryUserList?email=${params.email}`
+        } else if (params.currentPage && params.pageSize) {
+            url = `${baseUrl}/auth/queryUserList?currentPage=${params.currentPage}&&pageSize=${params.pageSize}`
         } else {
             url = `${baseUrl}/auth/queryUserList`
         }

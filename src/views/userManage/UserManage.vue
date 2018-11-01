@@ -40,11 +40,14 @@
             ></Table>
             <div class="pages">
               <Page class="pull-right" 
-              :total="20" 
-              :current="1" 
+              :total="pageTotal" 
+              :current="currentPage" 
               show-sizer
+              :page-size = "pageSize"
               :show-total="showTatal"
               @on-change="handlePage"
+              :page-size-opts = "pageSizeOpt"
+              @on-page-size-change = "handlePageSize"
                />
             </div>
         </div>
@@ -96,9 +99,13 @@ export default {
       modalShow: false,
       modalTitle: "",
       showTatal: true,
+      pageSizeOpt: [2, 5, 10],
       maskClosable: false,
       disabled: true,
       adminDis: false,
+      pageTotal: 0,
+      currentPage: 1,
+      pageSize: 5,
       userManageModel: {},
       userManageRules: {
         account: [
@@ -220,15 +227,21 @@ export default {
     };
   },
   mounted() {
-    queryUserList().then(res => {
-      this.userManageData = res;
+    let params = {
+      pageSize: this.pageSize,
+      currentPage: this.currentPage
+    };
+    queryUserList(params).then(res => {
+      this.userManageData = res.list;
+      this.pageTotal = res.count;
     });
   },
   methods: {
     query() {
       let params = this.searchModel;
       queryUserList(params).then(res => {
-        this.userManageData = res;
+        this.userManageData = res.list;
+        this.pageTotal = res.count;
       });
     },
     empty() {
@@ -292,8 +305,25 @@ export default {
         }
       });
     },
+    handlePageSize(page) {
+      let params = {
+        pageSize: page,
+        currentPage: this.currentPage
+      };
+      queryUserList(params).then(res => {
+        this.userManageData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
     handlePage(page) {
-      let currentPage = page;
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: page
+      };
+      queryUserList(params).then(res => {
+        this.userManageData = res.list;
+        this.pageTotal = res.count;
+      });
     },
     handleSelect(param) {
       // param 数组
