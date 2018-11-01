@@ -15,20 +15,20 @@
         :label-width="80"
         inline>
             <FormItem label="账号名称">
-                <Input type="text" v-model="searchModel.accountName" placeholder="账号名称查询"></Input>
+                <Input type="text" v-model="searchModel.account" placeholder="账号名称查询"></Input>
             </FormItem>
             <FormItem label="用户邮箱">
-                <Input type="text" v-model="searchModel.userEmail" placeholder="用户邮箱查询"></Input>
+                <Input type="text" v-model="searchModel.email" placeholder="用户邮箱查询"></Input>
             </FormItem>
             <FormItem>
-                <Button type="primary">查询</Button>
-                <Button style="margin-left: 8px">清空</Button>
+                <Button type="primary" @click="query">查询</Button>
+                <Button style="margin-left: 8px" @click="empty">清空</Button>
             </FormItem>
         </Form>
         <div class="table">
             <div class="btn">
                 <Button type="primary" @click="add">新增</Button>
-                <Button style="margin-left: 8px" :disabled="disabled">删除</Button>
+                <Button style="margin-left: 8px" :disabled="disabled" @click="removeAll">删除</Button>
             </div>
             <Table border 
             ref="selection" 
@@ -83,7 +83,12 @@
 </template>
 
 <script>
-import { registered, queryUserList } from "../../api/user.js";
+import {
+  registered,
+  queryUserList,
+  deleteUser,
+  editUser
+} from "../../api/user.js";
 export default {
   data() {
     return {
@@ -157,37 +162,56 @@ export default {
           width: 150,
           align: "center",
           render: (h, params) => {
-            return h("div", [
-              h(
-                "a",
-                {
-                  style: {
-                    marginRight: "5px"
-                  },
-                  on: {
-                    click: () => {
-                      this.edit(params.row);
+            if (this.userManageData[params.index].name === "admin") {
+              return h("div", [
+                h(
+                  "a",
+                  {
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.edit(params.row);
+                      }
                     }
-                  }
-                },
-                "编辑"
-              ),
-              h(
-                "Poptip",
-                {
-                  props: {
-                    confirm: true,
-                    title: "你确定要删除该条信息吗?"
                   },
-                  on: {
-                    "on-ok": () => {
-                      this.remove(params.index);
+                  "编辑"
+                )
+              ]);
+            } else {
+              return h("div", [
+                h(
+                  "a",
+                  {
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.edit(params.row);
+                      }
                     }
-                  }
-                },
-                [h("a", {}, "删除")]
-              )
-            ]);
+                  },
+                  "编辑"
+                ),
+                h(
+                  "Poptip",
+                  {
+                    props: {
+                      confirm: true,
+                      title: "你确定要删除该条信息吗?"
+                    },
+                    on: {
+                      "on-ok": () => {
+                        this.remove(params);
+                      }
+                    }
+                  },
+                  [h("a", {}, "删除")]
+                )
+              ]);
+            }
           }
         }
       ],
@@ -200,6 +224,16 @@ export default {
     });
   },
   methods: {
+    query() {
+      let params = this.searchModel;
+      queryUserList(params).then(res => {
+        this.userManageData = res;
+      });
+    },
+    empty() {
+      this.searchModel = {};
+    },
+    removeAll() {},
     add() {
       this.modalTitle = "新增功能";
       this.modalShow = true;
@@ -208,11 +242,18 @@ export default {
     edit(rowInfo) {
       this.modalTitle = "编辑功能";
       this.modalShow = true;
-      //
       this.userManageModel = rowInfo;
     },
     remove(params) {
       // 删除table行信息
+      deleteUser(params.row.id).then(res => {
+        if (res.status === 200) {
+          this.userManageData.splice(params.index, 1);
+          this.$Message.success("删除成功!");
+        } else {
+          this.$Message.success("删除失败!");
+        }
+      });
     },
     handleCancel() {
       this.modalShow = false;
@@ -221,14 +262,26 @@ export default {
       this.$refs["userManageModel"].validate(valid => {
         if (valid) {
           let model = this.userManageModel;
-          registered(model).then(res => {
-            if (res.status === 200) {
-              this.modalShow = false;
-              this.$Message.success("提交成功!");
-            } else {
-              this.$Message.error("提交失败!");
-            }
-          });
+          if (this.modalTitle === "新增功能") {
+            registered(model).then(res => {
+              if (res.status === 200) {
+                this.modalShow = false;
+                this.userManageData.push(model);
+                this.$Message.success("提交成功!");
+              } else {
+                this.$Message.error("提交失败!");
+              }
+            });
+          } else {
+            editUser(model).then(res => {
+              if (res.status === 200) {
+                this.modalShow = false;
+                this.$Message.success("提交成功!");
+              } else {
+                this.$Message.error("提交失败!");
+              }
+            });
+          }
         }
       });
     },

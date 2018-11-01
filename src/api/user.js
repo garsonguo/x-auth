@@ -29,14 +29,18 @@ export const registered = (registeredModal) => {
 }
 
 /**
- * @param {*} loginModal登录model
- * @description 调用登录服务端接口
+ * @param {*} 查询参数
+ * @description 调用查询服务端接口
  */
 export const queryUserList = (params) => {
     let url = ''
     if (params) {
-        if (params.name || params.email) {
-            url = `${baseUrl}/auth/queryUserList?name=${params.name}&&email=${params.email}`
+        if (params.account && params.email) {
+            url = `${baseUrl}/auth/queryUserList?account=${params.account}&&email=${params.email}`
+        } else if (params.account) {
+            url = `${baseUrl}/auth/queryUserList?account=${params.account}`
+        } else if (params.email) {
+            url = `${baseUrl}/auth/queryUserList?email=${params.email}`
         } else {
             url = `${baseUrl}/auth/queryUserList`
         }
@@ -48,6 +52,42 @@ export const queryUserList = (params) => {
         axios.get(url).then(res => {
             if (res.status === 200) {
                 resolve(res.data.result)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}
+
+/**
+ * @description 调用登录服务端接口
+ */
+export const deleteUser = (id) => {
+    let url = `${baseUrl}/auth/deleteUser`
+    let idObj = {
+        "id": id
+    }
+    return new Promise((resolve, reject) => {
+        axios.post(url, idObj).then(res => {
+            if (res.status === 200) {
+                resolve(res)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}
+
+/**
+ * @param {*} 编辑修改的model
+ * @description 调用编辑用户服务端接口
+ */
+export const editUser = (model) => {
+    let url = `${baseUrl}/auth/editUser`
+    return new Promise((resolve, reject) => {
+        axios.post(url, model).then(res => {
+            if (res.status === 200) {
+                resolve(res)
             } else {
                 reject(res)
             }

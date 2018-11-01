@@ -33,7 +33,7 @@ export default {
     return {
       modelLogin: {
         user: "admin",
-        password: "admin"
+        password: "admin1"
       },
       ruleLogin: {
         user: [
