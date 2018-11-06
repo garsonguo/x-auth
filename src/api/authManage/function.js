@@ -6,8 +6,8 @@ const baseUrl = 'http://127.0.0.1:3000'
  * @param {*} 查询参数
  * @description 调用查询服务端接口
  */
-export const queryFunctionList = (params) => {
-    let url = `${baseUrl}/auth/queryUserList`
+export const queryList = (params) => {
+    let url = `${baseUrl}/authManage/function/queryList`
     return new Promise((resolve, reject) => {
         axios.get(url, {
             params
@@ -20,12 +20,27 @@ export const queryFunctionList = (params) => {
         })
     })
 }
-
 /**
- * @description 调用登录服务端接口
+ * @param {*} model
+ * @description 调用新增服务端接口
  */
-export const deleteUser = (id) => {
-    let url = `${baseUrl}/auth/deleteUser`
+export const add = (modal) => {
+    let url = `${baseUrl}/authManage/function/add`
+    return new Promise((resolve, reject) => {
+        axios.post(url, modal).then(res => {
+            if (res.status === 200) {
+                resolve(res)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}
+/**
+ * @description 调用登删除服务端接口
+ */
+export const deleteFunc = (id) => {
+    let url = `${baseUrl}/authManage/function/delete`
     let idObj = {
         "id": id
     }
@@ -41,11 +56,11 @@ export const deleteUser = (id) => {
 }
 
 /**
- * @param {*} 编辑修改的model
- * @description 调用编辑用户服务端接口
+ * @param {*} model
+ * @description 调用编辑服务端接口
  */
-export const editUser = (model) => {
-    let url = `${baseUrl}/auth/editUser`
+export const edit = (model) => {
+    let url = `${baseUrl}/authManage/function/edit`
     return new Promise((resolve, reject) => {
         axios.post(url, model).then(res => {
             if (res.status === 200) {

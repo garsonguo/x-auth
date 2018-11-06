@@ -15,13 +15,13 @@
         :label-width="80"
         inline>
             <FormItem label="模块名称">
-                <Input type="text" v-model="searchModel.moduleName" placeholder="模块模糊查询"></Input>
+                <Input type="text" v-model="searchModel.module" placeholder="模块模糊查询"></Input>
             </FormItem>
             <FormItem label="功能名称">
-                <Input type="text" v-model="searchModel.functionName" placeholder="功能模糊查询"></Input>
+                <Input type="text" v-model="searchModel.name" placeholder="功能模糊查询"></Input>
             </FormItem>
             <FormItem label="功能编码">
-                <Input type="text" v-model="searchModel.functionCode" placeholder="编码模糊查询"></Input>
+                <Input type="text" v-model="searchModel.code" placeholder="编码模糊查询"></Input>
             </FormItem>
             <FormItem>
                 <Button type="primary">查询</Button>
@@ -43,11 +43,14 @@
             ></Table>
             <div class="pages">
               <Page class="pull-right" 
-              :total="20" 
-              :current="1" 
+              :total="pageTotal" 
+              :current="currentPage" 
               show-sizer
+              :page-size = "pageSize"
               :show-total="showTatal"
               @on-change="handlePage"
+              :page-size-opts = "pageSizeOpt"
+              @on-page-size-change = "handlePageSize"
                />
             </div>
         </div>
@@ -61,14 +64,14 @@
             :label-width="80"
             :rules="funRules"
             style="width:400px;">
-                <FormItem label="功能名称" prop="functionName">
-                    <Input type="text" v-model="funModel.functionName"></Input>
+                <FormItem label="功能名称" prop="name">
+                    <Input type="text" v-model="funModel.name"></Input>
                 </FormItem>
-                <FormItem label="功能编码" prop="functionCode">
-                    <Input type="text" v-model="funModel.functionCode"></Input>
+                <FormItem label="功能编码" prop="code">
+                    <Input type="text" v-model="funModel.code"></Input>
                 </FormItem>
                 <FormItem label="功能描述">
-                    <Input v-model="funModel.functionDes" type="textarea" placeholder="Enter something..." />
+                    <Input v-model="funModel.description" type="textarea" placeholder="Enter something..." />
                 </FormItem>
                 <FormItem label="模块" prop="module">
                     <Cascader :data="moduleList" v-model="funModel.module"></Cascader>
@@ -83,6 +86,12 @@
 </template>
 
 <script>
+import {
+  add,
+  queryList,
+  deleteFunc,
+  edit
+} from "../../../api/authManage/function.js";
 export default {
   data() {
     return {
@@ -92,16 +101,20 @@ export default {
       showTatal: true,
       maskClosable: false,
       disabled: true,
+      pageTotal: 0,
+      currentPage: 1,
+      pageSize: 5,
+      pageSizeOpt: [2, 5, 10],
       funModel: {},
       funRules: {
-        functionName: [
+        name: [
           {
             required: true,
             message: "功能名称不能为空",
             trigger: "blur"
           }
         ],
-        functionCode: [
+        code: [
           {
             required: true,
             message: "功能编码不能为空",
@@ -124,17 +137,17 @@ export default {
         },
         {
           title: "模块名称",
-          key: "moduleName",
+          key: "module",
           sortable: true
         },
         {
           title: "功能名称",
-          key: "functionName",
+          key: "name",
           sortable: true
         },
         {
           title: "功能编码",
-          key: "functionCode",
+          key: "code",
           sortable: true
         },
         {
@@ -177,14 +190,7 @@ export default {
           }
         }
       ],
-      funData: [
-        {
-          moduleName: "功能管理1",
-          functionName: "编辑功能",
-          functionCode: "function_edit",
-          module: ["System", "SystemSet", "MenuManage"]
-        }
-      ],
+      funData: [],
       moduleList: [
         {
           value: "System",
@@ -255,6 +261,19 @@ export default {
       ]
     };
   },
+  mounted() {
+    let params = {
+      pageSize: this.pageSize,
+      currentPage: this.currentPage,
+      sortBy: "",
+      descending: "",
+      filter: this.searchModel
+    };
+    queryList(params).then(res => {
+      this.funData = res.list;
+      this.pageTotal = res.count;
+    });
+  },
   methods: {
     add() {
       this.modalTitle = "新增功能";
@@ -278,10 +297,41 @@ export default {
         if (valid) {
           let model = this.funModel;
           this.modalShow = false;
-          this.$Message.success("提交成功!");
-        } else {
-          this.$Message.error("提交失败!");
+          if (this.modalTitle === "新增功能") {
+            add(model).then(res => {
+              if (res.status === 200) {
+                this.modalShow = false;
+                this.funData.push(model);
+                this.$Message.success("提交成功!");
+              } else {
+                this.$Message.error("提交失败!");
+              }
+            });
+          } else {
+            edit(model).then(res => {
+              if (res.status === 200) {
+                this.modalShow = false;
+                this.$Message.success("提交成功!");
+              } else {
+                this.$Message.error("提交失败!");
+              }
+            });
+          }
         }
+      });
+    },
+    handlePageSize(page) {
+      this.pageSize = page;
+      let params = {
+        pageSize: page,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.funData = res.list;
+        this.pageTotal = res.count;
       });
     },
     handlePage(page) {

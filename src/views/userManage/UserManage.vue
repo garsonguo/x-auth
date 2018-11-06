@@ -232,7 +232,7 @@ export default {
       currentPage: this.currentPage,
       sortBy: "",
       descending: "",
-      filter: ""
+      filter: this.searchModel
     };
     queryUserList(params).then(res => {
       this.userManageData = res.list;
