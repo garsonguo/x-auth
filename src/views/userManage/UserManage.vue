@@ -229,7 +229,10 @@ export default {
   mounted() {
     let params = {
       pageSize: this.pageSize,
-      currentPage: this.currentPage
+      currentPage: this.currentPage,
+      sortBy: "",
+      descending: "",
+      filter: ""
     };
     queryUserList(params).then(res => {
       this.userManageData = res.list;
@@ -238,7 +241,13 @@ export default {
   },
   methods: {
     query() {
-      let params = this.searchModel;
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
       queryUserList(params).then(res => {
         this.userManageData = res.list;
         this.pageTotal = res.count;
@@ -306,9 +315,13 @@ export default {
       });
     },
     handlePageSize(page) {
+      this.pageSize = page;
       let params = {
         pageSize: page,
-        currentPage: this.currentPage
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
       };
       queryUserList(params).then(res => {
         this.userManageData = res.list;
@@ -318,7 +331,10 @@ export default {
     handlePage(page) {
       let params = {
         pageSize: this.pageSize,
-        currentPage: page
+        currentPage: page,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
       };
       queryUserList(params).then(res => {
         this.userManageData = res.list;

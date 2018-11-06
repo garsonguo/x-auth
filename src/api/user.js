@@ -34,24 +34,26 @@ export const registered = (registeredModal) => {
  */
 export const queryUserList = (params) => {
     let url = ''
-    if (params) {
-        if (params.account && params.email) {
-            url = `${baseUrl}/auth/queryUserList?account=${params.account}&&email=${params.email}`
-        } else if (params.account) {
-            url = `${baseUrl}/auth/queryUserList?account=${params.account}`
-        } else if (params.email) {
-            url = `${baseUrl}/auth/queryUserList?email=${params.email}`
-        } else if (params.currentPage && params.pageSize) {
-            url = `${baseUrl}/auth/queryUserList?currentPage=${params.currentPage}&&pageSize=${params.pageSize}`
-        } else {
-            url = `${baseUrl}/auth/queryUserList`
-        }
-    } else {
-        url = `${baseUrl}/auth/queryUserList`
-    }
-
+    // if (params) {
+    //     if (params.account && params.email) {
+    //         url = `${baseUrl}/auth/queryUserList?account=${params.account}&&email=${params.email}`
+    //     } else if (params.account) {
+    //         url = `${baseUrl}/auth/queryUserList?account=${params.account}`
+    //     } else if (params.email) {
+    //         url = `${baseUrl}/auth/queryUserList?email=${params.email}`
+    //     } else if (params.currentPage && params.pageSize) {
+    //         url = `${baseUrl}/auth/queryUserList?currentPage=${params.currentPage}&&pageSize=${params.pageSize}`
+    //     } else {
+    //         url = `${baseUrl}/auth/queryUserList`
+    //     }
+    // } else {
+    //     url = `${baseUrl}/auth/queryUserList`
+    // }
+    url = `${baseUrl}/auth/queryUserList`
     return new Promise((resolve, reject) => {
-        axios.get(url).then(res => {
+        axios.get(url, {
+            params
+        }).then(res => {
             if (res.status === 200) {
                 resolve(res.data.result)
             } else {
