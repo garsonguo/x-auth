@@ -91,7 +91,7 @@ import {
   queryUserList,
   deleteUser,
   editUser
-} from "../../api/user.js";
+} from "../../api/userManage/user.js";
 export default {
   data() {
     return {

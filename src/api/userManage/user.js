@@ -7,7 +7,7 @@ const baseUrl = 'http://127.0.0.1:3000'
  * @description 调用登录服务端接口
  */
 export const login = (loginModal) => {
-    let url = `${baseUrl}/auth/login?name=${loginModal.user}&&password=${loginModal.password}`
+    let url = `${baseUrl}/userManage/user/login?name=${loginModal.user}&&password=${loginModal.password}`
     return axios.get(url)
 }
 
@@ -16,7 +16,7 @@ export const login = (loginModal) => {
  * @description 调用登录服务端接口
  */
 export const registered = (registeredModal) => {
-    let url = `${baseUrl}/auth/registered`
+    let url = `${baseUrl}/userManage/user/registered`
     return new Promise((resolve, reject) => {
         axios.post(url, registeredModal).then(res => {
             if (res.status === 200) {
@@ -33,23 +33,7 @@ export const registered = (registeredModal) => {
  * @description 调用查询服务端接口
  */
 export const queryUserList = (params) => {
-    let url = ''
-    // if (params) {
-    //     if (params.account && params.email) {
-    //         url = `${baseUrl}/auth/queryUserList?account=${params.account}&&email=${params.email}`
-    //     } else if (params.account) {
-    //         url = `${baseUrl}/auth/queryUserList?account=${params.account}`
-    //     } else if (params.email) {
-    //         url = `${baseUrl}/auth/queryUserList?email=${params.email}`
-    //     } else if (params.currentPage && params.pageSize) {
-    //         url = `${baseUrl}/auth/queryUserList?currentPage=${params.currentPage}&&pageSize=${params.pageSize}`
-    //     } else {
-    //         url = `${baseUrl}/auth/queryUserList`
-    //     }
-    // } else {
-    //     url = `${baseUrl}/auth/queryUserList`
-    // }
-    url = `${baseUrl}/auth/queryUserList`
+    let url = `${baseUrl}/userManage/user/queryUserList`
     return new Promise((resolve, reject) => {
         axios.get(url, {
             params
@@ -67,7 +51,7 @@ export const queryUserList = (params) => {
  * @description 调用登录服务端接口
  */
 export const deleteUser = (id) => {
-    let url = `${baseUrl}/auth/deleteUser`
+    let url = `${baseUrl}/userManage/user/deleteUser`
     let idObj = {
         "id": id
     }
@@ -87,7 +71,7 @@ export const deleteUser = (id) => {
  * @description 调用编辑用户服务端接口
  */
 export const editUser = (model) => {
-    let url = `${baseUrl}/auth/editUser`
+    let url = `${baseUrl}/userManage/user/editUser`
     return new Promise((resolve, reject) => {
         axios.post(url, model).then(res => {
             if (res.status === 200) {
