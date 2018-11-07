@@ -24,8 +24,8 @@
                 <Input type="text" v-model="searchModel.code" placeholder="编码模糊查询"></Input>
             </FormItem>
             <FormItem>
-                <Button type="primary">查询</Button>
-                <Button style="margin-left: 8px">清空</Button>
+                <Button type="primary" @click="query">查询</Button>
+                <Button style="margin-left: 8px" @click="empty">清空</Button>
             </FormItem>
         </Form>
         <div class="table">
@@ -180,7 +180,7 @@ export default {
                   },
                   on: {
                     "on-ok": () => {
-                      this.remove(params.index);
+                      this.remove(params);
                     }
                   }
                 },
@@ -275,6 +275,22 @@ export default {
     });
   },
   methods: {
+    query() {
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.funData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
+    empty() {
+      this.searchModel = {};
+    },
     add() {
       this.modalTitle = "新增功能";
       this.modalShow = true;
@@ -283,11 +299,18 @@ export default {
     edit(rowInfo) {
       this.modalTitle = "编辑功能";
       this.modalShow = true;
-      //
       this.funModel = rowInfo;
     },
     remove(params) {
       // 删除table行信息
+      deleteFunc(params.row.id).then(res => {
+        if (res.status === 200) {
+          this.funData.splice(params.index, 1);
+          this.$Message.success("删除成功!");
+        } else {
+          this.$Message.success("删除失败!");
+        }
+      });
     },
     handleCancel() {
       this.modalShow = false;
@@ -335,7 +358,17 @@ export default {
       });
     },
     handlePage(page) {
-      let currentPage = page;
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: page,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.funData = res.list;
+        this.pageTotal = res.count;
+      });
     },
     handleSelect(param) {
       // param 数组
