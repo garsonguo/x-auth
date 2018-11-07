@@ -6,14 +6,14 @@
         :label-width="80"
         inline>
             <FormItem label="角色名称">
-                <Input type="text" v-model="searchModel.roleName" placeholder="名称模糊查询"></Input>
+                <Input type="text" v-model="searchModel.name" placeholder="名称模糊查询"></Input>
             </FormItem>
             <FormItem label="角色编码">
-                <Input type="text" v-model="searchModel.roleCode" placeholder="编码模糊查询"></Input>
+                <Input type="text" v-model="searchModel.code" placeholder="编码模糊查询"></Input>
             </FormItem>
             <FormItem>
-                <Button type="primary">查询</Button>
-                <Button style="margin-left: 8px">清空</Button>
+                <Button type="primary" @click="query">查询</Button>
+                <Button style="margin-left: 8px" @click="empty">清空</Button>
             </FormItem>
         </Form>
         <div class="table">
@@ -31,11 +31,14 @@
             ></Table>
             <div class="pages">
               <Page class="pull-right" 
-              :total="20" 
-              :current="1" 
+              :total = "pageTotal" 
+              :current = "currentPage" 
               show-sizer
-              :show-total="showTatal"
-              @on-change="handlePage"
+              :page-size = "pageSize"
+              :show-total = "showTatal"
+              @on-change = "handlePage"
+              :page-size-opts = "pageSizeOpt"
+              @on-page-size-change = "handlePageSize"
                />
             </div>
         </div>
@@ -49,14 +52,14 @@
             :label-width="80"
             :rules="roleRules"
             style="width:400px;">
-                <FormItem label="角色名称" prop="roleName">
-                    <Input type="text" v-model="roleModel.roleName"></Input>
+                <FormItem label="角色名称" prop="name">
+                    <Input type="text" v-model="roleModel.name"></Input>
                 </FormItem>
-                <FormItem label="角色编码" prop="roleCode">
-                    <Input type="text" v-model="roleModel.roleCode"></Input>
+                <FormItem label="角色编码" prop="code">
+                    <Input type="text" v-model="roleModel.code"></Input>
                 </FormItem>
-                <FormItem label="角色描述" prop="roleDes">
-                    <Input type="textarea" v-model="roleModel.roleDes"></Input>
+                <FormItem label="角色描述" prop="description">
+                    <Input type="textarea" v-model="roleModel.description"></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -68,6 +71,12 @@
 </template>
 
 <script>
+import {
+  add,
+  queryList,
+  deleteRole,
+  edit
+} from "../../../api/authManage/role.js";
 export default {
   data() {
     return {
@@ -77,16 +86,20 @@ export default {
       modalShow: false,
       maskClosable: false,
       modalTitle: "",
+      pageTotal: 0,
+      currentPage: 1,
+      pageSize: 5,
+      pageSizeOpt: [2, 5, 10],
       roleModel: {},
       roleRules: {
-        roleName: [
+        name: [
           {
             required: true,
             message: "角色名称不能为空",
             trigger: "blur"
           }
         ],
-        roleCode: [
+        code: [
           {
             required: true,
             message: "角色编码不能为空",
@@ -102,12 +115,12 @@ export default {
         },
         {
           title: "角色名称",
-          key: "roleName",
+          key: "name",
           sortable: true
         },
         {
           title: "角色编码",
-          key: "roleCode",
+          key: "code",
           sortable: true
         },
         {
@@ -140,7 +153,7 @@ export default {
                   },
                   on: {
                     "on-ok": () => {
-                      this.remove(params.index);
+                      this.remove(params);
                     }
                   }
                 },
@@ -150,16 +163,39 @@ export default {
           }
         }
       ],
-      roleData: [
-        {
-          roleName: "功能管理1",
-          roleCode: "编辑功能",
-          module: ["System", "SystemSet", "MenuManage"]
-        }
-      ]
+      roleData: []
     };
   },
+  mounted() {
+    let params = {
+      pageSize: this.pageSize,
+      currentPage: this.currentPage,
+      sortBy: "",
+      descending: "",
+      filter: this.searchModel
+    };
+    queryList(params).then(res => {
+      this.roleData = res.list;
+      this.pageTotal = res.count;
+    });
+  },
   methods: {
+    query() {
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.roleData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
+    empty() {
+      this.searchModel = {};
+    },
     add() {
       this.modalTitle = "新增功能";
       this.modalShow = true;
@@ -172,6 +208,14 @@ export default {
     },
     remove(params) {
       // 删除table行信息
+      deleteRole(params.row.id).then(res => {
+        if (res.status === 200) {
+          this.roleData.splice(params.index, 1);
+          this.$Message.success("删除成功!");
+        } else {
+          this.$Message.success("删除失败!");
+        }
+      });
     },
     handleSelectChange(param) {
       if (param.length === 0) {
@@ -186,15 +230,58 @@ export default {
     handleSubmit() {
       this.$refs["roleModel"].validate(valid => {
         if (valid) {
-          let model = this.funModel;
+          let model = this.roleModel;
           this.modalShow = false;
-          this.$Message.success("提交成功!");
-        } else {
-          this.$Message.error("提交失败!");
+          if (this.modalTitle === "新增功能") {
+            add(model).then(res => {
+              if (res.status === 200) {
+                this.modalShow = false;
+                this.roleData.push(model);
+                this.$Message.success("提交成功!");
+              } else {
+                this.$Message.error("提交失败!");
+              }
+            });
+          } else {
+            edit(model).then(res => {
+              if (res.status === 200) {
+                this.modalShow = false;
+                this.$Message.success("提交成功!");
+              } else {
+                this.$Message.error("提交失败!");
+              }
+            });
+          }
         }
       });
     },
-    handlePage() {}
+    handlePageSize(page) {
+      this.pageSize = page;
+      let params = {
+        pageSize: page,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.roleData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
+    handlePage(page) {
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: page,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.roleData = res.list;
+        this.pageTotal = res.count;
+      });
+    }
   }
 };
 </script>
