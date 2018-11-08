@@ -135,6 +135,7 @@ export default {
     treeInit() {
       queryMenuList().then(res => {
         let list = res;
+        this.menuTreeList = [];
         let maplist = list.map(item => {
           item.expand = true;
           return item;
