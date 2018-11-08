@@ -27,11 +27,14 @@
             ></Table>
             <div class="pages">
               <Page class="pull-right" 
-              :total="20" 
-              :current="1" 
+              :total = "pageTotal" 
+              :current = "currentPage" 
               show-sizer
-              :show-total="showTatal"
-              @on-change="handlePage"
+              :page-size = "pageSize"
+              :show-total = "showTatal"
+              @on-change = "handlePage"
+              :page-size-opts = "pageSizeOpt"
+              @on-page-size-change = "handlePageSize"
                />
             </div>
         </div>
@@ -41,7 +44,7 @@
             :mask-closable="maskClosable">
             <Tree 
             ref="tree"
-            :data="dataTree" 
+            :data="menuTreeList"
             show-checkbox
             multiple
             ></Tree>
@@ -54,6 +57,8 @@
 </template>
 
 <script>
+import { queryList, deleteRole, edit } from "../../../api/authManage/role.js";
+import { queryList as queryMenuList } from "../../../api/systemSet/menu.js";
 export default {
   data() {
     return {
@@ -63,23 +68,11 @@ export default {
       modalShow: false,
       maskClosable: false,
       modalTitle: "",
+      pageTotal: 0,
+      currentPage: 1,
+      pageSize: 5,
+      pageSizeOpt: [2, 5, 10],
       roleModel: {},
-      roleRules: {
-        roleName: [
-          {
-            required: true,
-            message: "角色名称不能为空",
-            trigger: "blur"
-          }
-        ],
-        roleCode: [
-          {
-            required: true,
-            message: "角色编码不能为空",
-            trigger: "blur"
-          }
-        ]
-      },
       roleColumns: [
         {
           type: "selection",
@@ -88,12 +81,12 @@ export default {
         },
         {
           title: "角色名称",
-          key: "roleName",
+          key: "name",
           sortable: true
         },
         {
           title: "角色编码",
-          key: "roleCode",
+          key: "code",
           sortable: true
         },
         {
@@ -121,90 +114,48 @@ export default {
           }
         }
       ],
-      roleData: [
-        {
-          roleName: "功能管理1",
-          roleCode: "编辑功能",
-          module: ["System", "SystemSet", "MenuManage"]
-        }
-      ],
-      dataTree: [
-        {
-          title: "系统",
-          expand: true,
-          children: [
-            {
-              id: "1",
-              title: "系统设置",
-              expand: true,
-              children: [
-                {
-                  id: "1-1",
-                  title: "菜单管理"
-                }
-              ]
-            },
-            {
-              title: "权限管理",
-              id: "2",
-              expand: true,
-              children: [
-                {
-                  id: "2-1",
-                  title: "功能管理"
-                },
-                {
-                  id: "2-2",
-                  title: "角色管理"
-                },
-                {
-                  id: "2-3",
-                  title: "角色权限管理"
-                },
-                {
-                  id: "2-4",
-                  title: "角色用户管理"
-                },
-                {
-                  id: "2-5",
-                  title: "用户角色管咯"
-                }
-              ]
-            },
-            {
-              title: "组织构架",
-              id: "3",
-              expand: true,
-              children: [
-                {
-                  id: "3-1",
-                  title: "部门管理"
-                },
-                {
-                  id: "3-2",
-                  title: "职位管理"
-                }
-              ]
-            },
-            {
-              title: "用户管理",
-              id: "4",
-              expand: true,
-              children: [
-                {
-                  id: "4-1",
-                  title: "用户管理"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      roleData: [],
+      menuTreeList: []
     };
   },
+  mounted() {
+    let params = {
+      pageSize: this.pageSize,
+      currentPage: this.currentPage,
+      sortBy: "",
+      descending: "",
+      filter: this.searchModel
+    };
+    queryList(params).then(res => {
+      this.roleData = res.list;
+      this.pageTotal = res.count;
+    });
+  },
   methods: {
+    treeInit() {
+      queryMenuList().then(res => {
+        let list = res;
+        let maplist = list.map(item => {
+          item.expand = true;
+          return item;
+        });
+        let tree = list.filter(father => {
+          let branchArr = list.filter(child => {
+            return father.id == child.parentId;
+          });
+          if (branchArr.length > 0) {
+            father.children = branchArr;
+          }
+          return father.parentId == 0;
+        });
+        tree.forEach(item => {
+          this.menuTreeList.push(item);
+        });
+      });
+    },
     edit(rowInfo) {
       this.modalTitle = "编辑功能";
+      this.treeInit();
       this.modalShow = true;
       this.roleModel = rowInfo;
     },
@@ -213,11 +164,37 @@ export default {
     handleSelectAll() {},
     handleCancel() {},
     handleSubmit() {
-        // 获取树选中的节点
-      var attay = this.$refs.tree.getCheckedNodes()
+      // 获取树选中的节点
+      var attay = this.$refs.tree.getCheckedNodes();
     },
     getSelectedNodes() {},
-    handlePage() {}
+    handlePageSize(page) {
+      this.pageSize = page;
+      let params = {
+        pageSize: page,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.roleData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
+    handlePage(page) {
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: page,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.roleData = res.list;
+        this.pageTotal = res.count;
+      });
+    }
   }
 };
 </script>
