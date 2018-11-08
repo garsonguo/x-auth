@@ -17,11 +17,11 @@
                                 <Icon type="md-add"></Icon>
                                 <span>添加顶级菜单</span>
                             </Button>
-                            <Button @click="handleSubMenu" :disabled="subDis">
+                            <Button @click="handleSubMenu" :disabled="ifSubMenu">
                                 <Icon type="md-add"></Icon>
                                 <span>添加子菜单</span>
                             </Button>
-                            <Button type="warning" @click="handleDeleteMenu" :disabled="subDis">
+                            <Button type="warning" @click="handleDeleteMenu" :disabled="ifDelete">
                                 <Icon type="ios-trash" />
                                 <span>删除选中菜单</span>
                             </Button>
@@ -57,11 +57,11 @@
                                     <FormItem label="排序" prop="sort">
                                         <InputNumber v-model="systemForm.sort"></InputNumber>
                                     </FormItem>
-                                    <FormItem label="是否左侧显示">
-                                        <i-switch size="large" v-model="systemForm.leftShow" />
-                                    </FormItem>
                                     <FormItem label="是否锁定">
-                                        <i-switch size="large" v-model="systemForm.lock"/>
+                                        <i-switch size="large" v-model="systemForm.lock" />
+                                    </FormItem>
+                                    <FormItem label="是否展开">
+                                        <i-switch size="large" v-model="systemForm.expand"/>
                                     </FormItem>
                                     <FormItem label="图标">
                                         <Select v-model="systemForm.icon">
@@ -80,85 +80,19 @@
 </template>
 
 <script>
-import { add, edit, deleteMenu } from "../../api/systemSet/menu.js";
+import { add, edit, deleteMenu, queryList } from "../../api/systemSet/menu.js";
 export default {
   data() {
     return {
       isTop: false, // 是否为添加顶级菜单 false->添加子菜单
-      subDis: false,
+      ifSubMenu: false,
+      ifDelete: false,
       isEdit: false, // 是否为编辑
       topOrSub: true,
       btnDisable: true, // 初始化页面是，禁用提交按钮
       menuTitle: "菜单",
       currentId: "", // 当前选中菜单的ID
-      menuTreeList: [
-        {
-          title: "系统",
-          expand: true,
-          children: [
-            {
-              id: "1",
-              title: "系统设置",
-              children: [
-                {
-                  id: "1-1",
-                  title: "菜单管理"
-                }
-              ]
-            },
-            {
-              title: "权限管理",
-              id: "2",
-              children: [
-                {
-                  id: "2-1",
-                  title: "功能管理"
-                },
-                {
-                  id: "2-2",
-                  title: "角色管理"
-                },
-                {
-                  id: "2-3",
-                  title: "角色权限管理"
-                },
-                {
-                  id: "2-4",
-                  title: "角色用户管理"
-                },
-                {
-                  id: "2-5",
-                  title: "用户角色管咯"
-                }
-              ]
-            },
-            {
-              title: "组织构架",
-              id: "3",
-              children: [
-                {
-                  id: "3-1",
-                  title: "部门管理"
-                },
-                {
-                  id: "3-2",
-                  title: "职位管理"
-                }
-              ]
-            },
-            {
-              title: "用户管理",
-              id: "4",
-              children: [
-                {
-                  id: "4-1",
-                  title: "用户管理"
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      menuTreeList: [],
       iconList: [
         {
           value: "icon-fa",
@@ -171,8 +105,8 @@ export default {
         title: "",
         authCode: "",
         sort: 0,
-        leftShow: false,
-        lock: true,
+        lock: false,
+        expand: true,
         icon: ""
       },
       systemRules: {
@@ -181,15 +115,51 @@ export default {
       }
     };
   },
+  mounted() {
+    queryList().then(res => {
+      let list = res;
+      let tree = list.filter(father => {
+        let branchArr = list.filter(child => {
+          return father.id == child.parentId;
+        });
+        if (branchArr.length > 0) {
+          father.children = branchArr;
+        }
+        return father.parentId == 0;
+      });
+      tree.forEach(item => {
+        this.menuTreeList.push(item);
+      });
+    });
+  },
   methods: {
+    refreshTree() {
+      let _this = this;
+      _this.menuTreeList = [];
+      queryList().then(res => {
+        let list = res;
+        let tree = list.filter(father => {
+          let branchArr = list.filter(child => {
+            return father.id == child.parentId;
+          });
+          if (branchArr.length > 0) {
+            father.children = branchArr;
+          }
+          return father.parentId == 0;
+        });
+        tree.forEach(item => {
+          _this.menuTreeList.push(item);
+        });
+      });
+    },
     initData() {
       return {
         name: "",
         title: "",
         authCode: "",
         sort: 0,
-        leftShow: false,
-        lock: true,
+        lock: false,
+        expand: true,
         icon: ""
       };
     },
@@ -210,7 +180,7 @@ export default {
     handleDeleteMenu() {
       deleteMenu(this.currentId).then(res => {
         if (res.status === 200) {
-          //   this.menuTreeList.splice(params.index, 1);
+          this.refreshTree();
           this.$Message.success("删除成功!");
         } else {
           this.$Message.success("删除失败!");
@@ -219,20 +189,24 @@ export default {
     },
     selectChange(params) {
       this.isEdit = true;
-      this.subDis = false;
+      this.ifDelete = false;
       this.btnDisable = false;
       let title = params[0].title;
       this.currentId = params[0].id;
       this.menuTitle = `正在编辑【${title}】`;
+      if (params[0].lock) {
+        this.ifDelete = true;
+      }
       this.systemForm = {
         id: this.currentId,
-        name: title,
+        name: params[0].name,
         title: title,
-        authCode: 1,
-        sort: 0,
-        leftShow: true,
-        lock: true,
-        icon: "icon-fa"
+        path: params[0].name,
+        authCode: params[0].authCode,
+        sort: params[0].sort,
+        expand: params[0].expand,
+        lock: params[0].lock,
+        icon: params[0].icon
       };
     },
     menuSubmit() {
@@ -243,7 +217,7 @@ export default {
             add(this.systemForm).then(res => {
               if (res.status === 200) {
                 this.modalShow = false;
-                this.menuTreeList.push(res.data.result);
+                this.refreshTree();
                 this.$Message.success("提交成功!");
               } else {
                 this.$Message.error("提交失败!");
@@ -254,17 +228,17 @@ export default {
             add(this.systemForm).then(res => {
               if (res.status === 200) {
                 this.modalShow = false;
-                this.menuTreeList.push(res.data.result);
+                this.refreshTree();
                 this.$Message.success("提交成功!");
               } else {
                 this.$Message.error("提交失败!");
               }
             });
           } else {
-            debugger;
             edit(this.systemForm).then(res => {
               if (res.status === 200) {
                 this.modalShow = false;
+                this.refreshTree();
                 this.$Message.success("提交成功!");
               } else {
                 this.$Message.error("提交失败!");
