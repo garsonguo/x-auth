@@ -71,3 +71,60 @@ export const edit = (model) => {
         })
     })
 }
+
+/**
+ * @param {*} model
+ * @description 调用编辑服务端接口
+ */
+export const roleAddUser = (ids) => {
+    let url = `${baseUrl}/authManage/role/roleAddUser`
+    return new Promise((resolve, reject) => {
+        axios.post(url, ids).then(res => {
+            if (res.status === 200) {
+                resolve(res)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}
+
+/**
+ * 
+ * @param {*} id 
+ * @description 查询该角色下的用户
+ */
+export const queryRoleUser = (params) => {
+    let url = `${baseUrl}/authManage/role/queryRoleUser`
+    return new Promise((resolve, reject) => {
+        axios.get(url, {
+            params
+        }).then(res => {
+            if (res.status === 200) {
+                resolve(res)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}
+
+/**
+ * @description 调用登删除服务端接口
+ */
+export const deleteRoleUser = (ids) => {
+    let url = `${baseUrl}/authManage/role/deleteRoleUser`
+    let idObj = {
+        roleId: ids.roleId,
+        userId: ids.userId
+    }
+    return new Promise((resolve, reject) => {
+        axios.post(url, idObj).then(res => {
+            if (res.status === 200) {
+                resolve(res)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}

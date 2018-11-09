@@ -6,14 +6,14 @@
         :label-width="80"
         inline>
             <FormItem label="角色名称">
-                <Input type="text" v-model="searchModel.roleName" placeholder="名称模糊查询"></Input>
+                <Input type="text" v-model="searchModel.name" placeholder="名称模糊查询"></Input>
             </FormItem>
             <FormItem label="角色编码">
-                <Input type="text" v-model="searchModel.roleCode" placeholder="编码模糊查询"></Input>
+                <Input type="text" v-model="searchModel.code" placeholder="编码模糊查询"></Input>
             </FormItem>
             <FormItem>
-                <Button type="primary">查询</Button>
-                <Button style="margin-left: 8px">清空</Button>
+                <Button type="primary" @click="query">查询</Button>
+                <Button style="margin-left: 8px" @click="empty">清空</Button>
             </FormItem>
         </Form>
         <div class="table">
@@ -27,11 +27,14 @@
             ></Table>
             <div class="pages">
               <Page class="pull-right" 
-              :total="20" 
-              :current="1" 
+              :total = "pageTotal" 
+              :current = "currentPage" 
               show-sizer
-              :show-total="showTatal"
-              @on-change="handlePage"
+              :page-size = "pageSize"
+              :show-total = "showTatal"
+              @on-change = "handlePage"
+              :page-size-opts = "pageSizeOpt"
+              @on-page-size-change = "handlePageSize"
                />
             </div>
         </div>
@@ -46,14 +49,14 @@
             :label-width="80"
             inline>
                 <FormItem label="账号名称">
-                    <Input type="text" v-model="userListModel.roleName" placeholder="账号名称查询"></Input>
+                    <Input type="text" v-model="userListModel.name" placeholder="账号名称查询"></Input>
                 </FormItem>
                 <FormItem label="用户邮箱">
-                    <Input type="text" v-model="userListModel.roleCode" placeholder="用户邮箱查询"></Input>
+                    <Input type="text" v-model="userListModel.email" placeholder="用户邮箱查询"></Input>
                 </FormItem>
                 <FormItem>
-                    <Button type="primary">查询</Button>
-                    <Button style="margin-left: 8px">清空</Button>
+                    <Button type="primary" @click="queryUser">查询</Button>
+                    <Button style="margin-left: 8px" @click="emptyUser">清空</Button>
                 </FormItem>
             </Form>
             <Table 
@@ -61,6 +64,18 @@
             :columns="userListColumns" 
             :data="userListData"
             ></Table>
+            <div class="pages">
+              <Page class="pull-right" 
+              :total = "pageTotalUser" 
+              :current = "currentPageUser" 
+              show-sizer
+              :page-size = "pageSizeUser"
+              :show-total = "showTatal"
+              @on-change = "handlePageUser"
+              :page-size-opts = "pageSizeOpt"
+              @on-page-size-change = "handlePageSizeUser"
+               />
+            </div>
             <div slot="footer">
               <Button @click="handleCancel">关闭</Button>
             </div>
@@ -69,6 +84,15 @@
 </template>
 
 <script>
+import {
+  queryList,
+  deleteRole,
+  edit,
+  roleAddUser as add,
+  queryRoleUser,
+  deleteRoleUser
+} from "../../../api/authManage/role.js";
+import { queryUserList } from "../../../api/userManage/user.js";
 export default {
   data() {
     return {
@@ -78,23 +102,15 @@ export default {
       modalShow: false,
       maskClosable: false,
       modalTitle: "",
+      pageTotal: 0,
+      currentPage: 1,
+      pageSize: 5,
+      pageSizeOpt: [2, 5, 10],
+      pageTotalUser: 0,
+      currentPageUser: 1,
+      pageSizeUser: 5,
+      roleId: "",
       roleModel: {},
-      roleRules: {
-        roleName: [
-          {
-            required: true,
-            message: "角色名称不能为空",
-            trigger: "blur"
-          }
-        ],
-        roleCode: [
-          {
-            required: true,
-            message: "角色编码不能为空",
-            trigger: "blur"
-          }
-        ]
-      },
       roleColumns: [
         {
           type: "selection",
@@ -103,12 +119,12 @@ export default {
         },
         {
           title: "角色名称",
-          key: "roleName",
+          key: "name",
           sortable: true
         },
         {
           title: "角色编码",
-          key: "roleCode",
+          key: "code",
           sortable: true
         },
         {
@@ -136,34 +152,28 @@ export default {
           }
         }
       ],
-      roleData: [
-        {
-          roleName: "功能管理1",
-          roleCode: "编辑功能",
-          module: ["System", "SystemSet", "MenuManage"]
-        }
-      ],
+      roleData: [],
       userListModel: {},
       userListColumns: [
         {
           title: "账号名称",
-          key: "accountName"
+          key: "account"
         },
         {
           title: "用户名称",
-          key: "userName"
+          key: "name"
         },
         {
           title: "用户邮箱",
-          key: "userEmail"
+          key: "email"
         },
         {
-          title: "phone",
-          key: "phoneNum"
+          title: "电话",
+          key: "phone"
         },
         {
           title: "添加状态",
-          key: "addStatus"
+          key: "status"
         },
         {
           title: "操作",
@@ -171,65 +181,233 @@ export default {
           width: 150,
           align: "center",
           render: (h, params) => {
-            return h("div", [
-              h(
-                "a",
-                {
-                  style: {
-                    marginRight: "5px"
-                  },
-                  on: {
-                    click: () => {
-                      this.remove(params);
+            if (params.row.status === "添加") {
+              return h("div", [
+                h(
+                  "a",
+                  {
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.roleRemoveUser(params);
+                      }
                     }
-                  }
-                },
-                "移除"
-              )
-            ]);
+                  },
+                  "移除"
+                )
+              ]);
+            } else {
+              return h("div", [
+                h(
+                  "a",
+                  {
+                    style: {
+                      marginRight: "5px"
+                    },
+                    on: {
+                      click: () => {
+                        this.roleAddUser(params);
+                      }
+                    }
+                  },
+                  "添加"
+                )
+              ]);
+            }
           }
         }
       ],
-      userListData: [
-        {
-          accountName: "admin",
-          userName: "张三",
-          userEmail: "123@qq.com",
-          phoneNum: "18627185963",
-          addStatus: "添加"
-        },
-        {
-          accountName: "测试",
-          userName: "李四",
-          userEmail: "123@qq.com",
-          phoneNum: "18627185963",
-          addStatus: "移除"
-        }
-      ]
+      userListData: []
     };
   },
+  mounted() {
+    let params = {
+      pageSize: this.pageSize,
+      currentPage: this.currentPage,
+      sortBy: "",
+      descending: "",
+      filter: this.searchModel
+    };
+    queryList(params).then(res => {
+      this.roleData = res.list;
+      this.pageTotalUser = res.count;
+    });
+  },
   methods: {
+    async initUserList() {
+      let params = {
+        pageSize: this.pageSizeUser,
+        currentPage: this.currentPageUser,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      let uparams = {
+        roleId: this.roleId
+      };
+      let roleUser = await queryRoleUser(uparams);
+      let type = Object.prototype.toString.call(roleUser.data.result);
+      let userList = await queryUserList(params);
+
+      let list = userList.list.map(user => {
+        let ids = [];
+        if (type === "[object Object]") {
+          ids.push(roleUser.data.result);
+        } else {
+          ids = roleUser.data.result;
+        }
+        ids.forEach(item => {
+          if (item.userId === user.id) {
+            user.status = "添加";
+          } else {
+            user.status = "消除";
+          }
+        });
+        return user;
+      });
+      this.userListData = list;
+    },
+    query() {
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.roleData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
+    empty() {
+      this.searchModel = {};
+    },
+    queryUser() {
+      let params = {
+        pageSize: this.pageSizeUser,
+        currentPage: this.currentPageUser,
+        sortBy: "",
+        descending: "",
+        filter: this.userListModel
+      };
+      queryUserList(params).then(res => {
+        this.userListData = res.list;
+        this.pageTotalUser = res.count;
+      });
+    },
+    emptyUser() {
+      this.userListModel = {};
+    },
     edit(rowInfo) {
+      this.roleId = rowInfo.id;
       this.modalTitle = "用户列表";
       this.modalShow = true;
-      this.roleModel = rowInfo;
+      this.initUserList();
     },
-    remove(params) {
-      let statue = this.userListData[params.index].addStatus;
-      if (statue === "添加") {
-        params.row.addStatus = "消除";
-        this.$set(this.userListData, params.index, params.row);
-      } else {
-        params.row.addStatus = "添加";
-        this.$set(this.userListData, params.index, params.row);
-      }
+    roleAddUser(params) {
+      let ids = {
+        roleId: this.roleId,
+        userId: params.row.id
+      };
+      add(ids).then(res => {
+        if (res.status == 200) {
+          let statue = this.userListData[params.index].status;
+          if (statue === "消除") {
+            params.row.status = "添加";
+            this.$set(this.userListData, params.index, params.row);
+          } else {
+            params.row.status = "消除";
+            this.$set(this.userListData, params.index, params.row);
+          }
+          this.$Message.success("添加成功!");
+        } else {
+          this.$Message.error("添加失败!");
+        }
+      });
+    },
+    roleRemoveUser(params) {
+      let ids = {
+        roleId: this.roleId,
+        userId: params.row.id
+      };
+      deleteRoleUser(ids).then(res => {
+        if (res.status == 200) {
+          let statue = this.userListData[params.index].status;
+          if (statue === "消除") {
+            params.row.status = "添加";
+            this.$set(this.userListData, params.index, params.row);
+          } else {
+            params.row.addStatus = "消除";
+            this.$set(this.userListData, params.index, params.row);
+          }
+          this.$Message.success("添加成功!");
+        } else {
+          this.$Message.error("添加失败!");
+        }
+      });
     },
     handleSelectChange(param) {},
     handleSelect() {},
     handleSelectAll() {},
     handleCancel() {},
     getSelectedNodes() {},
-    handlePage() {}
+    handlePageSize(page) {
+      this.pageSize = page;
+      let params = {
+        pageSize: page,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.roleData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
+    handlePage(page) {
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: page,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.roleData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
+    handlePageSizeUser(page) {
+      this.pageSizeUser = page;
+      let params = {
+        pageSize: page,
+        currentPage: this.currentPageUser,
+        sortBy: "",
+        descending: "",
+        filter: this.userListModel
+      };
+      queryUserList(params).then(res => {
+        this.userListData = res.list;
+        this.pageTotalUser = res.count;
+      });
+    },
+    handlePageUser(page) {
+      let params = {
+        pageSize: this.pageSizeUser,
+        currentPage: page,
+        sortBy: "",
+        descending: "",
+        filter: this.userListModel
+      };
+      queryUserList(params).then(res => {
+        this.userListData = res.list;
+        this.pageTotalUser = res.count;
+      });
+    }
   }
 };
 </script>

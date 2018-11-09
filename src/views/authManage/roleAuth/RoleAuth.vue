@@ -6,14 +6,14 @@
         :label-width="80"
         inline>
             <FormItem label="角色名称">
-                <Input type="text" v-model="searchModel.roleName" placeholder="名称模糊查询"></Input>
+                <Input type="text" v-model="searchModel.name" placeholder="名称模糊查询"></Input>
             </FormItem>
             <FormItem label="角色编码">
-                <Input type="text" v-model="searchModel.roleCode" placeholder="编码模糊查询"></Input>
+                <Input type="text" v-model="searchModel.code" placeholder="编码模糊查询"></Input>
             </FormItem>
             <FormItem>
-                <Button type="primary">查询</Button>
-                <Button style="margin-left: 8px">清空</Button>
+                <Button type="primary" @click="query">查询</Button>
+                <Button style="margin-left: 8px" @click="empty">清空</Button>
             </FormItem>
         </Form>
         <div class="table">
@@ -132,6 +132,22 @@ export default {
     });
   },
   methods: {
+    query() {
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryList(params).then(res => {
+        this.roleData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
+    empty() {
+      this.searchModel = {};
+    },
     treeInit() {
       queryMenuList().then(res => {
         let list = res;
