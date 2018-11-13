@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import { queryList as queryMenuList } from "../../../api/systemSet/menu.js";
 import {
   add,
   queryList,
@@ -272,6 +273,31 @@ export default {
     queryList(params).then(res => {
       this.funData = res.list;
       this.pageTotal = res.count;
+    });
+    queryMenuList().then(res => {
+      let list = res;
+      let model = list.filter(father => {
+        let branchArr = list.filter(child => {
+          return father.id === child.parentId;
+        });
+        if (branchArr.length > 0) {
+          father.children = branchArr;
+        }
+        return father.parentId == 0;
+      });
+      function moduleInfo(model) {
+        let modalList = model.map(item => {
+          item.value = item.title;
+          item.label = item.title;
+          item.moduleID = item.id;
+          if (item.children) {
+            moduleInfo(item.children);
+          }
+          return item;
+        });
+        return modalList;
+      }
+      this.moduleList = moduleInfo(model);
     });
   },
   methods: {
