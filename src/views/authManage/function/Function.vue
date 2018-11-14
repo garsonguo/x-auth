@@ -271,7 +271,11 @@ export default {
       filter: this.searchModel
     };
     queryList(params).then(res => {
-      this.funData = res.list;
+      let list = res.list.map(item => {
+        item.module = item.module.join("/");
+        return item;
+      });
+      this.funData = list;
       this.pageTotal = res.count;
     });
     queryMenuList().then(res => {
@@ -350,6 +354,7 @@ export default {
             add(model).then(res => {
               if (res.status === 200) {
                 this.modalShow = false;
+                model.module = model.module.join("/");
                 this.funData.push(model);
                 this.$Message.success("提交成功!");
               } else {
