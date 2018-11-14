@@ -192,74 +192,7 @@ export default {
         }
       ],
       funData: [],
-      moduleList: [
-        {
-          value: "System",
-          label: "系统",
-          children: [
-            {
-              value: "SystemSet",
-              label: "系统设置",
-              children: [
-                {
-                  value: "MenuManage",
-                  label: "菜单管理"
-                }
-              ]
-            },
-            {
-              value: "AuthManage",
-              label: "权限管理",
-              children: [
-                {
-                  value: "Function",
-                  label: "功能管理"
-                },
-                {
-                  value: "Role",
-                  label: "角色管理"
-                },
-                {
-                  value: "RoleAuth",
-                  label: "角色权限管理"
-                },
-                {
-                  value: "RoleUser",
-                  label: "角色用户管理"
-                },
-                {
-                  value: "UserRole",
-                  label: "用户角色管理"
-                }
-              ]
-            },
-            {
-              value: "OrgStructure",
-              label: "组织构架",
-              children: [
-                {
-                  value: "DepManage",
-                  label: "部门管理"
-                },
-                {
-                  value: "PosManage",
-                  label: "职位管理"
-                }
-              ]
-            },
-            {
-              value: "UserManage",
-              label: "用户管理",
-              children: [
-                {
-                  value: "UserManage",
-                  label: "用户管理"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      moduleList: []
     };
   },
   mounted() {
@@ -329,6 +262,7 @@ export default {
     edit(rowInfo) {
       this.modalTitle = "编辑功能";
       this.modalShow = true;
+      rowInfo.module = rowInfo.module.split("/");
       this.funModel = rowInfo;
     },
     remove(params) {
@@ -365,6 +299,7 @@ export default {
             edit(model).then(res => {
               if (res.status === 200) {
                 this.modalShow = false;
+                model.module = model.module.join("/");
                 this.$Message.success("提交成功!");
               } else {
                 this.$Message.error("提交失败!");
