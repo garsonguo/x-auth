@@ -110,6 +110,26 @@ export const queryRoleUser = (params) => {
 }
 
 /**
+ * 
+ * @param {*} id 
+ * @description 查询该用户下的角色
+ */
+export const queryUserRole = (params) => {
+    let url = `${baseUrl}/authManage/role/queryUserRole`
+    return new Promise((resolve, reject) => {
+        axios.get(url, {
+            params
+        }).then(res => {
+            if (res.status === 200) {
+                resolve(res)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}
+
+/**
  * @description 调用登删除服务端接口
  */
 export const deleteRoleUser = (ids) => {

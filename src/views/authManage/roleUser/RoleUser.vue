@@ -250,7 +250,6 @@ export default {
       let roleUser = await queryRoleUser(uparams);
       let type = Object.prototype.toString.call(roleUser.data.result);
       let userList = await queryUserList(params);
-
       let list = userList.list.map(user => {
         let ids = [];
         if (type === "[object Object]") {
@@ -340,7 +339,7 @@ export default {
             params.row.status = "添加";
             this.$set(this.userListData, params.index, params.row);
           } else {
-            params.row.addStatus = "消除";
+            params.row.status = "消除";
             this.$set(this.userListData, params.index, params.row);
           }
           this.$Message.success("添加成功!");
@@ -383,30 +382,11 @@ export default {
     },
     handlePageSizeUser(page) {
       this.pageSizeUser = page;
-      let params = {
-        pageSize: page,
-        currentPage: this.currentPageUser,
-        sortBy: "",
-        descending: "",
-        filter: this.userListModel
-      };
-      queryUserList(params).then(res => {
-        this.userListData = res.list;
-        this.pageTotalUser = res.count;
-      });
+      this.initUserList();
     },
     handlePageUser(page) {
-      let params = {
-        pageSize: this.pageSizeUser,
-        currentPage: page,
-        sortBy: "",
-        descending: "",
-        filter: this.userListModel
-      };
-      queryUserList(params).then(res => {
-        this.userListData = res.list;
-        this.pageTotalUser = res.count;
-      });
+      this.currentPageUser = page;
+      this.initUserList();
     }
   }
 };
