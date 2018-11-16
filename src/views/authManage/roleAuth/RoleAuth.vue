@@ -161,9 +161,11 @@ export default {
         this.menuTreeList = [];
         let maplist = list.map(item => {
           item.expand = true;
-          if (item.id === checkedIds.menuId) {
-            item.checked = true;
-          }
+          checkedIds.forEach(nodeId => {
+            if (item.id === nodeId.menuId) {
+              item.checked = true;
+            }
+          });
           return item;
         });
         let tree = list.filter(father => {

@@ -261,22 +261,11 @@ export default {
       let roleList = await queryList(params);
 
       let list = roleList.list.map(role => {
-        let ids = [];
-        if (type === "[object Object]") {
-          ids.push(roleUser.data.result);
-        } else if (type === "[object Undefined]") {
-          ids = ids;
-        } else {
-          ids = roleUser.data.result;
-        }
-        if (ids.length === 0) {
-          role.status = "消除";
-        }
+        let ids = roleUser.data.result;
+        role.status = "消除";
         ids.forEach(item => {
           if (item.roleId === role.id) {
             role.status = "添加";
-          } else {
-            role.status = "消除";
           }
         });
         return role;

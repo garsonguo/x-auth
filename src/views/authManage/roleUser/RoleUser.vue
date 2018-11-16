@@ -248,20 +248,13 @@ export default {
         roleId: this.roleId
       };
       let roleUser = await queryRoleUser(uparams);
-      let type = Object.prototype.toString.call(roleUser.data.result);
       let userList = await queryUserList(params);
       let list = userList.list.map(user => {
-        let ids = [];
-        if (type === "[object Object]") {
-          ids.push(roleUser.data.result);
-        } else {
-          ids = roleUser.data.result;
-        }
+        let ids = roleUser.data.result;
+        user.status = "消除";
         ids.forEach(item => {
           if (item.userId === user.id) {
             user.status = "添加";
-          } else {
-            user.status = "消除";
           }
         });
         return user;
