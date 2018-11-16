@@ -226,7 +226,9 @@ export default {
     },
     handleSelect() {},
     handleSelectAll() {},
-    handleCancel() {},
+    handleCancel() {
+      this.modalShow = false;
+    },
     handleSubmit() {
       this.$refs["roleModel"].validate(valid => {
         if (valid) {

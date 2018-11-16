@@ -82,11 +82,6 @@ export default {
       roleModel: {},
       roleColumns: [
         {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
-        {
           title: "角色名称",
           key: "name",
           sortable: true
@@ -199,7 +194,9 @@ export default {
     handleSelectChange(param) {},
     handleSelect() {},
     handleSelectAll() {},
-    handleCancel() {},
+    handleCancel() {
+      this.modalShow = false;
+    },
     handleSubmit() {
       // 获取树选中的节点
       var checkedNode = this.$refs.tree.getCheckedNodes();

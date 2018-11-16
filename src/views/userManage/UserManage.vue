@@ -170,24 +170,7 @@ export default {
           width: 150,
           align: "center",
           render: (h, params) => {
-            if (this.userManageData[params.index].name === "admin") {
-              return h("div", [
-                h(
-                  "a",
-                  {
-                    style: {
-                      marginRight: "5px"
-                    },
-                    on: {
-                      click: () => {
-                        this.edit(params.row);
-                      }
-                    }
-                  },
-                  "编辑"
-                )
-              ]);
-            } else {
+            if (this.userManageData[params.index].name !== "admin") {
               return h("div", [
                 h(
                   "a",

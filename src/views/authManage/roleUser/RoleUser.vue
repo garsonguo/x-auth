@@ -49,7 +49,7 @@
             :label-width="80"
             inline>
                 <FormItem label="账号名称">
-                    <Input type="text" v-model="userListModel.name" placeholder="账号名称查询"></Input>
+                    <Input type="text" v-model="userListModel.account" placeholder="账号名称查询"></Input>
                 </FormItem>
                 <FormItem label="用户邮箱">
                     <Input type="text" v-model="userListModel.email" placeholder="用户邮箱查询"></Input>
@@ -112,11 +112,6 @@ export default {
       roleId: "",
       roleModel: {},
       roleColumns: [
-        {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
         {
           title: "角色名称",
           key: "name",
@@ -242,7 +237,7 @@ export default {
         currentPage: this.currentPageUser,
         sortBy: "",
         descending: "",
-        filter: this.searchModel
+        filter: this.userListModel
       };
       let uparams = {
         roleId: this.roleId
@@ -278,17 +273,7 @@ export default {
       this.searchModel = {};
     },
     queryUser() {
-      let params = {
-        pageSize: this.pageSizeUser,
-        currentPage: this.currentPageUser,
-        sortBy: "",
-        descending: "",
-        filter: this.userListModel
-      };
-      queryUserList(params).then(res => {
-        this.userListData = res.list;
-        this.pageTotalUser = res.count;
-      });
+      this.initUserList();
     },
     emptyUser() {
       this.userListModel = {};
@@ -344,7 +329,9 @@ export default {
     handleSelectChange(param) {},
     handleSelect() {},
     handleSelectAll() {},
-    handleCancel() {},
+    handleCancel() {
+      this.modalShow = false;
+    },
     getSelectedNodes() {},
     handlePageSize(page) {
       this.pageSize = page;

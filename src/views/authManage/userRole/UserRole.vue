@@ -6,14 +6,14 @@
         :label-width="80"
         inline>
             <FormItem label="账号名称">
-                <Input type="text" v-model="searchModel.accountName" placeholder="账号名称查询"></Input>
+                <Input type="text" v-model="searchModel.account" placeholder="账号名称查询"></Input>
             </FormItem>
             <FormItem label="用户邮箱">
-                <Input type="text" v-model="searchModel.userEmail" placeholder="用户邮箱查询"></Input>
+                <Input type="text" v-model="searchModel.email" placeholder="用户邮箱查询"></Input>
             </FormItem>
             <FormItem>
-                <Button type="primary">查询</Button>
-                <Button style="margin-left: 8px">清空</Button>
+                <Button type="primary" @click="query">查询</Button>
+                <Button style="margin-left: 8px" @click="empty">清空</Button>
             </FormItem>
         </Form>
         <div class="table">
@@ -55,8 +55,8 @@
                     <Input type="text" v-model="roleSearchModel.code" placeholder="用户邮箱查询"></Input>
                 </FormItem>
                 <FormItem>
-                    <Button type="primary">查询</Button>
-                    <Button style="margin-left: 8px">清空</Button>
+                    <Button type="primary" @click="queryRole">查询</Button>
+                    <Button style="margin-left: 8px" @click="emptyRole">清空</Button>
                 </FormItem>
             </Form>
             <Table 
@@ -272,6 +272,28 @@ export default {
       });
       this.roleListData = list;
     },
+    queryRole() {
+      this.initRoleList();
+    },
+    query() {
+      let params = {
+        pageSize: this.pageSize,
+        currentPage: this.currentPage,
+        sortBy: "",
+        descending: "",
+        filter: this.searchModel
+      };
+      queryUserList(params).then(res => {
+        this.userRoleData = res.list;
+        this.pageTotal = res.count;
+      });
+    },
+    empty() {
+      this.searchModel = {};
+    },
+    emptyRole() {
+      this.roleSearchModel = {};
+    },
     edit(rowInfo) {
       this.modalTitle = "用户列表";
       this.modalShow = true;
@@ -292,7 +314,9 @@ export default {
     handleSelectChange(param) {},
     handleSelect() {},
     handleSelectAll() {},
-    handleCancel() {},
+    handleCancel() {
+      this.modalShow = false;
+    },
     getSelectedNodes() {},
     handlePageSize(page) {
       this.pageSize = page;
