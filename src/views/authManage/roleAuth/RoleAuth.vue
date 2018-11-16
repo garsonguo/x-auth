@@ -57,12 +57,19 @@
 </template>
 
 <script>
-import { queryList, deleteRole, edit } from "../../../api/authManage/role.js";
+import {
+  queryList,
+  deleteRole,
+  edit,
+  addAccess,
+  queryAccessList
+} from "../../../api/authManage/role.js";
 import { queryList as queryMenuList } from "../../../api/systemSet/menu.js";
 export default {
   data() {
     return {
       searchModel: {},
+      roleId: "",
       disabled: true,
       showTatal: true,
       modalShow: false,
@@ -104,7 +111,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      this.edit(params.row);
+                      this.edit(params);
                     }
                   }
                 },
@@ -148,12 +155,15 @@ export default {
     empty() {
       this.searchModel = {};
     },
-    treeInit() {
-      queryMenuList().then(res => {
+    treeInit(checkedIds) {
+      queryMenuList(checkedIds).then(res => {
         let list = res;
         this.menuTreeList = [];
         let maplist = list.map(item => {
           item.expand = true;
+          if (item.id === checkedIds.menuId) {
+            item.checked = true;
+          }
           return item;
         });
         let tree = list.filter(father => {
@@ -172,9 +182,17 @@ export default {
     },
     edit(rowInfo) {
       this.modalTitle = "编辑功能";
-      this.treeInit();
       this.modalShow = true;
-      this.roleModel = rowInfo;
+      this.roleId = rowInfo.row.id;
+      let params = {
+        roleId: this.roleId
+      };
+      queryAccessList(params).then(res => {
+        if (res.status == 200) {
+          let nodeIds = res.data.result;
+          this.treeInit(nodeIds);
+        }
+      });
     },
     handleSelectChange(param) {},
     handleSelect() {},
@@ -182,7 +200,24 @@ export default {
     handleCancel() {},
     handleSubmit() {
       // 获取树选中的节点
-      var attay = this.$refs.tree.getCheckedNodes();
+      var checkedNode = this.$refs.tree.getCheckedNodes();
+      let checkedIDs = [];
+      checkedNode.forEach(item => {
+        if (!item.children) {
+          checkedIDs.push(item.id);
+        }
+      });
+      let params = {
+        roleId: this.roleId,
+        nodeIds: checkedIDs
+      };
+      addAccess(params).then(res => {
+        if (res.status == 200) {
+          this.$Message.success("添加成功!");
+        } else {
+          this.$Message.error("添加失败");
+        }
+      });
     },
     getSelectedNodes() {},
     handlePageSize(page) {

@@ -130,6 +130,44 @@ export const queryUserRole = (params) => {
 }
 
 /**
+ * 
+ * @param {*} params 
+ * @description 新增角色权限
+ */
+export const addAccess = (params) => {
+    let url = `${baseUrl}/authManage/role/addAccess`
+    return new Promise((resolve, reject) => {
+        axios.post(url, params).then(res => {
+            if (res.status === 200) {
+                resolve(res)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}
+
+/**
+ * 
+ * @param {*} params 
+ * @description 查询角色权限
+ */
+export const queryAccessList = (params) => {
+    let url = `${baseUrl}/authManage/role/queryAccessList`
+    return new Promise((resolve, reject) => {
+        axios.get(url, {
+            params
+        }).then(res => {
+            if (res.status === 200) {
+                resolve(res)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}
+
+/**
  * @description 调用登删除服务端接口
  */
 export const deleteRoleUser = (ids) => {
