@@ -51,8 +51,8 @@
                                     <FormItem label="标题" prop="title">
                                         <Input v-model="systemForm.title"></Input>
                                     </FormItem>
-                                    <FormItem label="权限码" prop="authCode">
-                                        <Input v-model="systemForm.authCode"></Input>
+                                    <FormItem label="路径" prop="path">
+                                        <Input v-model="systemForm.path"></Input>
                                     </FormItem>
                                     <FormItem label="排序" prop="sort">
                                         <InputNumber v-model="systemForm.sort"></InputNumber>
@@ -103,7 +103,7 @@ export default {
         parentId: 0,
         name: "",
         title: "",
-        authCode: "",
+        path: "",
         sort: 0,
         lock: false,
         expand: true,
@@ -156,7 +156,7 @@ export default {
       return {
         name: "",
         title: "",
-        authCode: "",
+        path: "",
         sort: 0,
         lock: false,
         expand: true,
@@ -201,8 +201,7 @@ export default {
         id: this.currentId,
         name: params[0].name,
         title: title,
-        path: params[0].name,
-        authCode: params[0].authCode,
+        path: params[0].path,
         sort: params[0].sort,
         expand: params[0].expand,
         lock: params[0].lock,
