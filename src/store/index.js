@@ -7,7 +7,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        tagList: []
+        tagList: [],
+        isCollapsed: false
     },
     actions: actions,
     mutations: mutations

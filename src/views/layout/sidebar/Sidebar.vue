@@ -1,5 +1,5 @@
 <style lang='less'>
-@import './sidebar.less';
+@import "./sidebar.less";
 </style>
 
 <template>
@@ -41,48 +41,36 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import routerConfig from "../../../router/routerConfig.js";
+
 export default {
-  props: {
-    menuList: {
-      type: Array
-    },
-    isCollapsed: {
-      type: Boolean
-    }
-  },
   data() {
     return {
       openName: [],
-      activeName: ''
+      activeName: "",
+      menuList: []
     };
   },
   created() {
     this.getOpenName();
   },
   mounted() {
-    this.activeName = this.$route.name
-    let _this = this
+    this.menuList = routerConfig;
+    this.activeName = this.$route.name;
+    let _this = this;
     // 关键延迟20ms
-    setTimeout(_this.$nextTick(()=>{
-      _this.$refs.sidebar.updateActiveName()
-    }),20)
+    setTimeout(
+      _this.$nextTick(() => {
+        _this.$refs.sidebar.updateActiveName();
+      }),
+      20
+    );
   },
   watch: {
     $route() {
-      this.activeName = this.$route.name
-      this.getOpenName()
-    },
-    activeName(){
-      // let _this = this
-      // setTimeout(this.$nextTick(()=>{
-      //   _this.$refs.sidebar.updateActiveName()
-      // }),20)
-    },
-    openName(){
-      // let _this = this
-      // setTimeout(_this.$nextTick(()=>{
-      //   _this.$refs.sidebar.updateOpened()
-      // }),20)
+      this.activeName = this.$route.name;
+      this.getOpenName();
     }
   },
   computed: {
@@ -91,16 +79,20 @@ export default {
     },
     menuitemClasses() {
       return ["menu-item", this.isCollapsed ? "collapsed-menu" : ""];
-    }
+    },
+    ...mapState(["isCollapsed"])
   },
   methods: {
     getOpenName() {
-      let _this = this
-      this.openName = []
-      this.openName.push(this.$route.fullPath.split("/")[1])
-      setTimeout(_this.$nextTick(()=>{
-        _this.$refs.sidebar.updateOpened()
-      }),20)
+      let _this = this;
+      this.openName = [];
+      this.openName.push(this.$route.fullPath.split("/")[1]);
+      setTimeout(
+        _this.$nextTick(() => {
+          _this.$refs.sidebar.updateOpened();
+        }),
+        20
+      );
     }
   }
 };

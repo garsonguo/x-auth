@@ -1,5 +1,5 @@
 <style scoped lang='less'>
-@import './header.less';
+@import "./header.less";
 </style>
 
 <template>
@@ -30,7 +30,8 @@
 </template>
 
 <script>
-import { deleteToken } from '../../../libs/auth.js'
+import { mapMutations } from "vuex";
+import { deleteToken } from "../../../libs/auth.js";
 export default {
   data() {
     return {
@@ -39,7 +40,7 @@ export default {
     };
   },
   mounted() {
-    this.getRouteList()
+    this.getRouteList();
   },
   computed: {
     rotateIcon() {
@@ -47,23 +48,25 @@ export default {
     }
   },
   watch: {
-    $route: function(route){
-      this.routeList = this.$route.matched
+    $route: function(route) {
+      this.routeList = this.$route.matched;
     }
   },
   methods: {
+    ...mapMutations(["collapsedMenu"]),
     getRouteList() {
-      this.routeList = this.$route.matched
+      this.routeList = this.$route.matched;
     },
     collapsedSider() {
       this.isCollapsed = !this.isCollapsed;
-      this.$emit("collapsedSider", this.isCollapsed);
+      this.collapsedMenu(this.isCollapsed);
+      // this.$emit("collapsedSider", this.isCollapsed);
     },
     handleLogout() {
-      deleteToken()
+      deleteToken();
       this.$router.push({
-        name: 'Login'
-      })
+        name: "Login"
+      });
     }
   }
 };

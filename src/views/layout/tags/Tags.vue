@@ -1,5 +1,5 @@
 <style scoped lang='less'>
-@import './tags.less';
+@import "./tags.less";
 </style>
 
 <template>
@@ -30,7 +30,7 @@
                 </router-link>
             </Tag>
             <Tag 
-            v-for="(item, index) in tagList" 
+            v-for="(item, index) in tagListCookie" 
             type="dot" 
             closable 
             ref="tag"
@@ -47,20 +47,46 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
+import {
+  getNewTagList,
+  closeTags,
+  keepTags,
+  getTagCookie
+} from "../../../libs/util.js";
 export default {
-  props: {
-    tagList: {
-      type: Array
-    }
-  },
   data() {
     return {
-      tagBodyLeft: 0
+      tagBodyLeft: 0,
+      tagListCookie: this.tagList
     };
   },
+  mounted() {
+    this.tagListCookie = getTagCookie();
+  },
+  computed: {
+    ...mapState(["tagList"])
+  },
+  watch: {
+    $route(to) {
+      this.getTagName(to.name);
+      let list = getNewTagList(this.tagListCookie, to);
+      this.updateTagList(list);
+      this.tagListCookie = getTagCookie();
+    }
+  },
   methods: {
+    ...mapMutations(["updateTagList"]),
     tagClose(event, name) {
-      this.$emit("tagClose", name);
+      let filterArray = closeTags(this.tagList, name);
+      this.updateTagList(filterArray);
+      this.tagListCookie = getTagCookie();
+      const length = filterArray.length - 1;
+      if (length === -1) {
+        this.$router.push({ name: "Home" });
+      } else {
+        this.$router.push(filterArray[length]);
+      }
     },
     isCrrentTag(item) {
       let isCurrent = this.$route.name;
@@ -91,10 +117,17 @@ export default {
     },
     handleClose(name) {
       if (name === "closeAll") {
-        this.$emit("handleCloseAll");
+        this.updateTagList([]);
+        this.tagListCookie = getTagCookie();
+        this.$router.push({
+          name: "Home"
+        });
       } else {
         let currentRoute = this.$route.name;
-        this.$emit("handleCloseOther", currentRoute);
+        let keepTag = keepTags(this.tagList, currentRoute);
+        this.updateTagList(keepTag);
+        this.tagListCookie = getTagCookie();
+        this.$router.push(keepTag[0]);
       }
     },
     moveToView(tag) {
@@ -125,11 +158,6 @@ export default {
           }
         });
       });
-    }
-  },
-  watch: {
-    $route(to) {
-      this.getTagName(to.name);
     }
   }
 };

@@ -5,6 +5,7 @@ import {
     setToken,
     setUserInfo
 } from '../libs/auth.js'
+import {} from './mutations'
 
 export default {
     /**
@@ -17,8 +18,8 @@ export default {
         return new Promise((resolve, reject) => {
             login(formLogin).then(res => {
                 if (res.status === 200) {
-                    setUserInfo(formLogin)
-                    setToken('x-auth')
+                    setUserInfo(formLogin) // 将用户信息存储到cookie中
+                    setToken('x-auth') // 设置token
                     resolve(true)
                 } else {
                     reject(res)
