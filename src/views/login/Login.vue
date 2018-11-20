@@ -28,6 +28,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { deleteTagCookie } from "../../libs/util.js";
 export default {
   data() {
     return {
@@ -67,6 +68,7 @@ export default {
         if (valid) {
           this.handleLogin(_this.modelLogin).then(res => {
             if (res) {
+              deleteTagCookie();
               this.$Message.success("登录成功");
               _this.$router.push({
                 name: "Home"

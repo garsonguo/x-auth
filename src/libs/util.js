@@ -72,3 +72,10 @@ export const getTagCookie = () => {
     result = tagList
     return JSON.parse(result)
 }
+
+/** 
+ * @description {*} 删除cookie中的taglist
+ */
+export const deleteTagCookie = () => {
+    Cookies.remove('tagList')
+}

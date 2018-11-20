@@ -82,3 +82,22 @@ export const editUser = (model) => {
         })
     })
 }
+
+/**
+ * @param {*} 编辑修改的model
+ * @description 调用编辑用户服务端接口
+ */
+export const queryMenuByUserName = (params) => {
+    let url = `${baseUrl}/userManage/user/queryMenuByUserName`
+    return new Promise((resolve, reject) => {
+        axios.get(url, {
+            params
+        }).then(res => {
+            if (res.status === 200) {
+                resolve(res)
+            } else {
+                reject(res)
+            }
+        })
+    })
+}

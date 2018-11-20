@@ -2,18 +2,19 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../views/layout/Layout.vue'
 import iView from 'iview'
-import { getToken } from '../libs/auth.js'
+import {
+  getToken
+} from '../libs/auth.js'
 
 Vue.use(Router)
 
 const router = new Router({
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'Login',
       component: () => import('../views/login/Login.vue'),
-      meta:{
-        title:'登录'
+      meta: {
+        title: '登录'
       }
     },
     {
@@ -28,16 +29,16 @@ const router = new Router({
         path: '/Home',
         name: 'Home',
         component: () => import('../views/home/Home.vue'),
-        meta:{
-          title:'首页'
+        meta: {
+          title: '首页'
         }
       }]
     },
     {
-      path:'/SystemSet',
-      name:'SystemSet',
+      path: '/System/SystemSet',
+      name: 'SystemSet',
       component: Layout,
-      meta:{
+      meta: {
         title: '系统设置'
       },
       children: [{
@@ -50,10 +51,10 @@ const router = new Router({
       }]
     },
     {
-      path:'/AuthManage',
-      name:'AuthManage',
+      path: '/System/AuthManage',
+      name: 'AuthManage',
       component: Layout,
-      meta:{
+      meta: {
         title: '权限管理'
       },
       children: [{
@@ -63,28 +64,28 @@ const router = new Router({
         meta: {
           title: '功能管理'
         }
-      },{
+      }, {
         path: 'Role',
         name: 'Role',
         component: () => import('../views/authManage/role/Role.vue'),
         meta: {
           title: '角色管理'
         }
-      },{
+      }, {
         path: 'RoleAuth',
         name: 'RoleAuth',
         component: () => import('../views/authManage/roleAuth/RoleAuth.vue'),
         meta: {
           title: '角色权限管理'
         }
-      },{
+      }, {
         path: 'RoleUser',
         name: 'RoleUser',
         component: () => import('../views/authManage/roleUser/RoleUser.vue'),
         meta: {
           title: '角色用户管理'
         }
-      },{
+      }, {
         path: 'UserRole',
         name: 'UserRole',
         component: () => import('../views/authManage/userRole/UserRole.vue'),
@@ -94,34 +95,35 @@ const router = new Router({
       }]
     },
     {
-      path:'/OrgStructure',
-      name:'OrgStructure',
+      path: '/System/OrgStructure',
+      name: 'OrgStructure',
       component: Layout,
-      meta:{
+      meta: {
         title: '组织构架'
       },
       children: [{
-        path: 'DepManage',
-        name: 'DepManage',
-        component: () => import('../views/orgStructure/depManage/DepManage.vue'),
-        meta: {
-          title: '部门管理'
+          path: 'DepManage',
+          name: 'DepManage',
+          component: () => import('../views/orgStructure/depManage/DepManage.vue'),
+          meta: {
+            title: '部门管理'
+          }
+        },
+        {
+          path: 'PosManage',
+          name: 'PosManage',
+          component: () => import('../views/orgStructure/posManage/PosManage.vue'),
+          meta: {
+            title: '职位管理'
+          }
         }
-      },
-      {
-        path: 'PosManage',
-        name: 'PosManage',
-        component: () => import('../views/orgStructure/posManage/PosManage.vue'),
-        meta: {
-          title: '职位管理'
-        }
-      }]
+      ]
     },
     {
-      path:'/UserManage',
-      name:'UserManage',
+      path: '/System/UserManage',
+      name: 'UserManage',
       component: Layout,
-      meta:{
+      meta: {
         title: '用户管理'
       },
       children: [{
@@ -141,26 +143,26 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
-  if(!token && to.name === 'Login'){
+  if (!token && to.name === 'Login') {
     // 未登录且要跳转的页面是登录页
     next()
-  }else if(!token && to.name !== 'Login'){
+  } else if (!token && to.name !== 'Login') {
     // 未登录且要跳转的页面不是登录页
     next({
-      name:'Login'
+      name: 'Login'
     })
-  }else if(token && to.name === 'Login'){
+  } else if (token && to.name === 'Login') {
     // 未登录且要跳转的页面不是登录页
     next({
-      name:'Home'
+      name: 'Home'
     })
-  }else{
+  } else {
     next()
   }
 })
 
 
-router.afterEach(()=>{
+router.afterEach(() => {
   iView.LoadingBar.finish()
   window.scrollTo(0, 0)
 })

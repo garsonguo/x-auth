@@ -202,9 +202,7 @@ export default {
       var checkedNode = this.$refs.tree.getCheckedNodes();
       let checkedIDs = [];
       checkedNode.forEach(item => {
-        if (!item.children) {
-          checkedIDs.push(item.id);
-        }
+        checkedIDs.push(item.id);
       });
       let params = {
         roleId: this.roleId,
@@ -212,6 +210,7 @@ export default {
       };
       addAccess(params).then(res => {
         if (res.status == 200) {
+          this.modalShow = false;
           this.$Message.success("添加成功!");
         } else {
           this.$Message.error("添加失败");
