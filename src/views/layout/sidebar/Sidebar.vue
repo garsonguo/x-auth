@@ -27,24 +27,26 @@
                           <Icon :type="item.icon" />
                           <span>{{item.title}}</span>
                       </template>
-                      <MenuItem v-if="!child.children" :name="child.name" v-for="child in item.children">
-                          <router-link :to="child.path">
-                            <Icon :type="child.icon"></Icon>
-                            <span>{{child.title}}</span>
-                          </router-link>
-                      </MenuItem>
-                      <Submenu v-else :name="child.name">
-                        <template slot="title">
-                          <Icon :type="child.icon" />
-                          <span>{{child.title}}</span>
-                        </template>
-                        <MenuItem :name="childSub.name" v-for="childSub in child.children">
-                          <router-link :to="childSub.path">
-                            <Icon :type="childSub.icon"></Icon>
-                            <span>{{childSub.title}}</span>
-                          </router-link>
+                      <template v-for="child in item.children">
+                        <MenuItem v-if="!child.children" :name="child.name" >
+                            <router-link :to="child.path">
+                              <Icon :type="child.icon"></Icon>
+                              <span>{{child.title}}</span>
+                            </router-link>
                         </MenuItem>
-                      </Submenu>
+                        <Submenu v-else :name="child.name">
+                          <template slot="title">
+                            <Icon :type="child.icon" />
+                            <span>{{child.title}}</span>
+                          </template>
+                          <MenuItem :name="childSub.name" v-for="childSub in child.children">
+                            <router-link :to="childSub.path">
+                              <Icon :type="childSub.icon"></Icon>
+                              <span>{{childSub.title}}</span>
+                            </router-link>
+                          </MenuItem>
+                        </Submenu>
+                      </template>
                     </Submenu>
                 </template>
             </Menu>
@@ -74,35 +76,37 @@ export default {
     let nameParams = {
       name: user.user
     };
-    // queryMenuByUserName(nameParams).then(res => {
-    //   if (res.status === 200) {
-    //     let menu = res.data.result;
-    //     let tree = menu.filter(father => {
-    //       let branchArr = menu.filter(child => {
-    //         return father.id == child.parentId;
-    //       });
-    //       if (branchArr.length > 0) {
-    //         father.children = branchArr;
-    //       }
-    //       return father.parentId == 0;
-    //     });
-    //     this.menuList = tree;
-    //   }
-    // });
-    this.menuList = routerConfig;
-    this.activeName = this.$route.name;
-    let _this = this;
-    // 关键延迟20ms
-    setTimeout(
-      _this.$nextTick(() => {
-        _this.$refs.sidebar.updateActiveName();
-      }),
-      20
-    );
+    queryMenuByUserName(nameParams).then(res => {
+      if (res.status === 200) {
+        let menu = res.data.result;
+        let tree = menu.filter(father => {
+          let branchArr = menu.filter(child => {
+            return father.id == child.parentId;
+          });
+          if (branchArr.length > 0) {
+            father.children = branchArr;
+          }
+          return father.parentId == 0;
+        });
+        this.menuList = tree;
+        this.activeName = this.$route.name;
+        let _this = this;
+        // 关键延迟20ms
+        setTimeout(
+          _this.$nextTick(() => {
+            _this.getOpenName();
+            _this.$refs.sidebar.updateActiveName();
+          }),
+          20
+        );
+      }
+    });
+    // this.menuList = routerConfig;
   },
   watch: {
     $route() {
       this.activeName = this.$route.name;
+      debugger;
       this.getOpenName();
     }
   },
@@ -119,7 +123,15 @@ export default {
     getOpenName() {
       let _this = this;
       this.openName = [];
-      this.openName.push(this.$route.fullPath.split("/")[2]);
+      let routeArray = this.$route.fullPath.split("/");
+      if (routeArray.length === 4) {
+        this.openName.push(routeArray[1]);
+        this.openName.push(routeArray[2]);
+      } else if (routeArray.length == 3) {
+        this.openName.push(routeArray[2]);
+      } else {
+        this.openName.push(routeArray[1]);
+      }
       setTimeout(
         _this.$nextTick(() => {
           _this.$refs.sidebar.updateOpened();
