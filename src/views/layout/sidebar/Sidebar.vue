@@ -56,9 +56,9 @@
 
 <script>
 import { mapState } from "vuex";
-import routerConfig from "@/router/routerConfig.js";
 import { queryMenuByUserName } from "@/api/userManage/user.js";
 import { getUserInfo } from "@/libs/auth.js";
+import { initTree } from "@/libs/util.js";
 
 export default {
   data() {
@@ -79,16 +79,7 @@ export default {
     queryMenuByUserName(nameParams).then(res => {
       if (res.status === 200) {
         let menu = res.data.result;
-        let tree = menu.filter(father => {
-          let branchArr = menu.filter(child => {
-            return father.id == child.parentId;
-          });
-          if (branchArr.length > 0) {
-            father.children = branchArr;
-          }
-          return father.parentId == 0;
-        });
-        this.menuList = tree;
+        this.menuList = initTree(menu);
         this.activeName = this.$route.name;
         let _this = this;
         // 关键延迟20ms
@@ -101,12 +92,10 @@ export default {
         );
       }
     });
-    // this.menuList = routerConfig;
   },
   watch: {
     $route() {
       this.activeName = this.$route.name;
-      debugger;
       this.getOpenName();
     }
   },
@@ -122,16 +111,7 @@ export default {
   methods: {
     getOpenName() {
       let _this = this;
-      this.openName = [];
-      let routeArray = this.$route.fullPath.split("/");
-      if (routeArray.length === 4) {
-        this.openName.push(routeArray[1]);
-        this.openName.push(routeArray[2]);
-      } else if (routeArray.length == 3) {
-        this.openName.push(routeArray[2]);
-      } else {
-        this.openName.push(routeArray[1]);
-      }
+      this.openName = this.$route.fullPath.split("/");
       setTimeout(
         _this.$nextTick(() => {
           _this.$refs.sidebar.updateOpened();

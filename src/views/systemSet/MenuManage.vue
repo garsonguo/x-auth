@@ -81,6 +81,8 @@
 
 <script>
 import { add, edit, deleteMenu, queryList } from "@/api/systemSet/menu.js";
+import { initTree } from "@/libs/util.js";
+
 export default {
   data() {
     return {
@@ -118,15 +120,7 @@ export default {
   mounted() {
     queryList().then(res => {
       let list = res;
-      let tree = list.filter(father => {
-        let branchArr = list.filter(child => {
-          return father.id == child.parentId;
-        });
-        if (branchArr.length > 0) {
-          father.children = branchArr;
-        }
-        return father.parentId == 0;
-      });
+      let tree = initTree(list);
       tree.forEach(item => {
         this.menuTreeList.push(item);
       });
@@ -138,15 +132,7 @@ export default {
       _this.menuTreeList = [];
       queryList().then(res => {
         let list = res;
-        let tree = list.filter(father => {
-          let branchArr = list.filter(child => {
-            return father.id == child.parentId;
-          });
-          if (branchArr.length > 0) {
-            father.children = branchArr;
-          }
-          return father.parentId == 0;
-        });
+        let tree = initTree(list);
         tree.forEach(item => {
           _this.menuTreeList.push(item);
         });

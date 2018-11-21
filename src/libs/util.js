@@ -79,3 +79,19 @@ export const getTagCookie = () => {
 export const deleteTagCookie = () => {
     Cookies.remove('tagList')
 }
+
+/** 
+ * @description {*} 生成树
+ */
+export const initTree = (list) => {
+    let tree = list.filter(parent => {
+        let branch = list.filter(child => {
+            return child.parentId === parent.id;
+        })
+        if (branch.length > 0) {
+            parent.children = branch;
+        }
+        return parent.parentId === 0;
+    })
+    return tree;
+}
