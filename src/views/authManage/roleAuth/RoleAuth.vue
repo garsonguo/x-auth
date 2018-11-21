@@ -63,8 +63,8 @@ import {
   edit,
   addAccess,
   queryAccessList
-} from "../../../api/authManage/role.js";
-import { queryList as queryMenuList } from "../../../api/systemSet/menu.js";
+} from "@/api/authManage/role.js";
+import { queryList as queryMenuList } from "@/api/systemSet/menu.js";
 export default {
   data() {
     return {

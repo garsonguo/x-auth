@@ -9,5 +9,12 @@ module.exports = {
                 changeOrigin: true
             }
         }
-    }
+    },
+    configureWebpack: {
+        resolve: {
+            alias: {
+                'src': '@',
+            }
+        }
+    },
 }

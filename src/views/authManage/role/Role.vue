@@ -71,12 +71,7 @@
 </template>
 
 <script>
-import {
-  add,
-  queryList,
-  deleteRole,
-  edit
-} from "../../../api/authManage/role.js";
+import { add, queryList, deleteRole, edit } from "@/api/authManage/role.js";
 export default {
   data() {
     return {

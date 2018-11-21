@@ -28,7 +28,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { deleteTagCookie } from "../../libs/util.js";
+import { deleteTagCookie } from "@/libs/util.js";
 export default {
   data() {
     return {

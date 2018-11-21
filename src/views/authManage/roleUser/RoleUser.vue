@@ -91,8 +91,8 @@ import {
   roleAddUser as add,
   queryRoleUser,
   deleteRoleUser
-} from "../../../api/authManage/role.js";
-import { queryUserList } from "../../../api/userManage/user.js";
+} from "@/api/authManage/role.js";
+import { queryUserList } from "@/api/userManage/user.js";
 export default {
   data() {
     return {

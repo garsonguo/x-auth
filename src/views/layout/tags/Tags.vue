@@ -54,7 +54,7 @@ import {
   keepTags,
   getTagCookie,
   deleteTagCookie
-} from "../../../libs/util.js";
+} from "@/libs/util.js";
 export default {
   data() {
     return {

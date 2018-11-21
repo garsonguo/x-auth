@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { add, edit, deleteMenu, queryList } from "../../api/systemSet/menu.js";
+import { add, edit, deleteMenu, queryList } from "@/api/systemSet/menu.js";
 export default {
   data() {
     return {

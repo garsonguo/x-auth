@@ -56,9 +56,9 @@
 
 <script>
 import { mapState } from "vuex";
-import routerConfig from "../../../router/routerConfig.js";
-import { queryMenuByUserName } from "../../../api/userManage/user.js";
-import { getUserInfo } from "../../../libs/auth.js";
+import routerConfig from "@/router/routerConfig.js";
+import { queryMenuByUserName } from "@/api/userManage/user.js";
+import { getUserInfo } from "@/libs/auth.js";
 
 export default {
   data() {

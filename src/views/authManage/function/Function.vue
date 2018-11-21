@@ -86,13 +86,8 @@
 </template>
 
 <script>
-import { queryList as queryMenuList } from "../../../api/systemSet/menu.js";
-import {
-  add,
-  queryList,
-  deleteFunc,
-  edit
-} from "../../../api/authManage/function.js";
+import { queryList as queryMenuList } from "@/api/systemSet/menu.js";
+import { add, queryList, deleteFunc, edit } from "@/api/authManage/function.js";
 export default {
   data() {
     return {

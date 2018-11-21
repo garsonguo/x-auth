@@ -31,7 +31,7 @@
 
 <script>
 import { mapMutations } from "vuex";
-import { deleteToken } from "../../../libs/auth.js";
+import { deleteToken } from "@/libs/auth.js";
 export default {
   data() {
     return {
