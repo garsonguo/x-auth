@@ -1,13 +1,24 @@
 <template>
-    <baidu-map class="map" :center="center" :zoom="zoom" @ready="handler" ak="0H3hj15e73s2GwKS7iXa3Ws0jYY4Ad7P">
+    <baidu-map class="map" 
+    :center="center" 
+    :zoom="zoom" 
+    @ready="handler" 
+    ak="0H3hj15e73s2GwKS7iXa3Ws0jYY4Ad7P">
+        <bm-scale anchor="BMAP_ANCHOR_TOP_LEFT"></bm-scale>
+        <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"></bm-navigation>
+        <bm-overview-map anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :isOpen="true"></bm-overview-map>
     </baidu-map>
 </template>
 
 <script>
 import BaiduMap from "vue-baidu-map/components/map/Map.vue";
+import { BmScale, BmNavigation, BmOverviewMap } from "vue-baidu-map";
 export default {
   components: {
-    BaiduMap
+    BaiduMap,
+    BmScale,
+    BmNavigation,
+    BmOverviewMap
   },
   data() {
     return {
