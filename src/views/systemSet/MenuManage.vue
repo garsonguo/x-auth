@@ -65,6 +65,7 @@
                                     </FormItem>
                                     <FormItem label="图标">
                                       <Input v-model="systemForm.icon" >
+                                        <Icon slot="prepend" :type="systemForm.icon"></Icon>
                                         <Button class="appendBtn" @click="searchIcon" slot="append">搜索图标</Button>
                                       </Input>
                                     </FormItem>
