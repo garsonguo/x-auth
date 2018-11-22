@@ -64,9 +64,9 @@
                                         <i-switch size="large" v-model="systemForm.expand"/>
                                     </FormItem>
                                     <FormItem label="图标">
-                                        <Select v-model="systemForm.icon">
-                                            <Option v-for="item in iconList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                                        </Select>
+                                      <Input v-model="systemForm.icon" >
+                                        <Button class="appendBtn" @click="searchIcon" slot="append">搜索图标</Button>
+                                      </Input>
                                     </FormItem>
                                     <Button type="primary" class="btn" @click="menuSubmit" :disabled="btnDisable">提交</Button>
                                 </Form>
@@ -76,13 +76,26 @@
                 </div>
             </Col>
         </Row>
+        <Modal
+            v-model="modalShow"
+            :title="modalTitle"
+            :mask-closable="maskClosable"
+            :footer-hide="true">
+            <div class="icon-group">
+              <Row>
+                <Col span="3" v-for="item of iconList">
+                  <Button :icon="item" @click="botinIcon(item)"></Button>
+                </Col>
+              </Row>
+            </div>
+        </Modal>
     </div>
 </template>
 
 <script>
 import { add, edit, deleteMenu, queryList } from "@/api/systemSet/menu.js";
 import { initTree } from "@/libs/util.js";
-
+import icons from "@/libs/icon.js";
 export default {
   data() {
     return {
@@ -92,15 +105,13 @@ export default {
       isEdit: false, // 是否为编辑
       topOrSub: true,
       btnDisable: true, // 初始化页面是，禁用提交按钮
+      modalShow: false, // 搜索图标弹出框是否展示
+      modalTitle: "搜索图标",
+      maskClosable: false,
       menuTitle: "菜单",
       currentId: "", // 当前选中菜单的ID
       menuTreeList: [],
-      iconList: [
-        {
-          value: "icon-fa",
-          label: "icon-fa"
-        }
-      ],
+      iconList: icons,
       systemForm: {
         parentId: 0,
         name: "",
@@ -232,7 +243,27 @@ export default {
           }
         }
       });
+    },
+    searchIcon() {
+      this.modalShow = true;
+    },
+    botinIcon(item) {
+      this.systemForm.icon = item;
+      this.modalShow = false;
     }
   }
 };
 </script>
+
+
+<style lang="less">
+.icon-group {
+  text-align: center;
+  .ivu-col {
+    margin: 4px;
+  }
+  .ivu-icon {
+    font-size: 20px;
+  }
+}
+</style>
