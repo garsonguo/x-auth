@@ -19,6 +19,7 @@
             <Dropdown class="logout" placement="bottom-end" @on-click="handleLogout">
                 <a href="javascript:void(0)">
                   <img class="logo" src="../../../assets/logo.png">
+                  <span>{{user}}</span>
                   <Icon type="ios-arrow-down"></Icon>
                 </a>
                 <DropdownMenu slot="list">
@@ -31,16 +32,19 @@
 
 <script>
 import { mapMutations } from "vuex";
-import { deleteToken } from "@/libs/auth.js";
+import { deleteToken, getUserInfo } from "@/libs/auth.js";
 export default {
   data() {
     return {
       isCollapsed: false,
-      routeList: null
+      routeList: null,
+      user: ""
     };
   },
   mounted() {
     this.getRouteList();
+    let userInfo = JSON.parse(getUserInfo());
+    this.user = userInfo.user;
   },
   computed: {
     rotateIcon() {

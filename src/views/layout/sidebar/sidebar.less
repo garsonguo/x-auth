@@ -48,6 +48,9 @@
         vertical-align: middle;
         font-size: 22px;
       }
+      .ivu-menu{
+        display: none !important;
+      }
       .ivu-menu-submenu-title-icon {
         display: none;
       }
@@ -57,19 +60,15 @@
       .ivu-menu-item-active{
         .ivu-menu-submenu-title{
           background-color: #363e4f !important;
-          .ivu-icon{
-            margin-left: -4px;
-          }
         }
       }
       .ivu-menu-submenu-title{
-        .ivu-icon{
-          margin-left: -4px;
+        .ivu-icon:first-child{
+          display: initial;
         }
       }
-      .ivu-menu-submenu:hover,
-      .ivu-menu-opened{
-        .ivu-menu{
+      .ivu-menu-submenu:hover{
+        >.ivu-menu{
           display: block !important;
           position: absolute;
           top: 0;
