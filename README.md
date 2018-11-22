@@ -39,3 +39,4 @@ yarn run lint
 8. iview在table中使用poptip：https://blog.csdn.net/yhy0901/article/details/81033181
 9. 局部变量如何穿透局部到全局，参照路径：/Users/xiaobog/Desktop/xiaobog/x-auth/src/views/authManage/function/Function.vue
 10. iview异步加载树时，注意执行顺序，默认打开三级以上菜单时，openName为Submenu name数组
+11. 百度地图：https://github.com/Dafrok/vue-baidu-map

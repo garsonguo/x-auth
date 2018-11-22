@@ -35,6 +35,23 @@ const router = new Router({
       }]
     },
     {
+      path: '/Map',
+      name: 'Layout',
+      component: Layout,
+      redirect: 'Map',
+      meta: {
+        title: '地图'
+      },
+      children: [{
+        path: '/Map',
+        name: 'Map',
+        component: () => import('../views/map/Map.vue'),
+        meta: {
+          title: '地图'
+        }
+      }]
+    },
+    {
       path: '/System/SystemSet',
       name: 'SystemSet',
       component: Layout,
