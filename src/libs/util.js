@@ -95,3 +95,12 @@ export const initTree = (list) => {
     })
     return tree;
 }
+
+/** 
+ * @description {*} 根据数组对象中的某个字段排序
+ */
+export const sortByfont = (font) => {
+    return function (a, b) {
+        return a[font] - b[font]
+    }
+}

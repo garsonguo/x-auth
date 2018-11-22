@@ -58,7 +58,7 @@
 import { mapState } from "vuex";
 import { queryMenuByUserName } from "@/api/userManage/user.js";
 import { getUserInfo } from "@/libs/auth.js";
-import { initTree } from "@/libs/util.js";
+import { initTree, sortByfont } from "@/libs/util.js";
 
 export default {
   data() {
@@ -79,7 +79,8 @@ export default {
     queryMenuByUserName(nameParams).then(res => {
       if (res.status === 200) {
         let menu = res.data.result;
-        this.menuList = initTree(menu);
+        let tree = initTree(menu);
+        this.menuList = tree.sort(sortByfont("sort"));
         this.activeName = this.$route.name;
         let _this = this;
         // 关键延迟20ms
